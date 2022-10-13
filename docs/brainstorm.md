@@ -10,6 +10,8 @@ The owner of the device wants to monitor the temperatures of the devices CPUs.
 
 The case can for instance be a Raspberry Pi that is used to control the gas price displays at a gas station.
 
+This can help indicate if the device has flaws such as broken fans or equiv.
+
 
 ## Room temperature compliance / Greenhouse
 
@@ -44,6 +46,8 @@ Marking turning off/on the light on the X-axis.
 
 - Offline buffering on sensor nodes
   - Requires more information in the messages (log-date and value at a bare minimum)
+
+- Offline detection (did it implode?)
 
 - Database migrations (evolving the data schema with versioned changelogs)
 

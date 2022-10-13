@@ -1,0 +1,52 @@
+<mxfile host="65bd71144e">
+    <diagram id="2ub_MOD4YZXFNoCS6ZDj" name="Page-1">
+        <mxGraphModel dx="1592" dy="1142" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-9" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-1" target="CPNuhk3VlAr5MY1AE5EZ-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-1" value="Temperature sensor" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="240" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-8" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-2" target="CPNuhk3VlAr5MY1AE5EZ-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-2" value="Temperature sensor" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="480" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-10" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-3" target="CPNuhk3VlAr5MY1AE5EZ-4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-3" value="MQTT&lt;br&gt;broker" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="239" y="370" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-4" target="CPNuhk3VlAr5MY1AE5EZ-5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-4" value="Ingestion service" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="360" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-13" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-5" target="CPNuhk3VlAr5MY1AE5EZ-12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-5" value="SQL&lt;br&gt;database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="240" width="60" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-6" value="Visualization service" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="120" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-14" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="CPNuhk3VlAr5MY1AE5EZ-12" target="CPNuhk3VlAr5MY1AE5EZ-6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-12" value="Some API" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="120" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="CPNuhk3VlAr5MY1AE5EZ-15" value="..." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="385" width="60" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

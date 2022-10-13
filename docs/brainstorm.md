@@ -51,3 +51,4 @@ Marking turning off/on the light on the X-axis.
 
 - Database migrations (evolving the data schema with versioned changelogs)
 
+- Sending notifications on temperatures exceeding a set threshold (Discord?)

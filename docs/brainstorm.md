@@ -52,3 +52,26 @@ Marking turning off/on the light on the X-axis.
 - Database migrations (evolving the data schema with versioned changelogs)
 
 - Sending notifications on temperatures exceeding a set threshold (Discord?)
+
+- Allow for dynamic configuration of sensor measurements. Fictive JSON schema: 
+  
+```json
+{
+  "place": "<place-id>",
+  "house": "<house-id>",
+  "room": "<room-id>",
+  "identifier": "<sensor-id>",
+  "measurements": [
+    {
+      "name": "cpu-temperature",
+      "script": "<script-expression>",
+      "cron": "<cron-expression>"
+    },
+    {
+      "name": "gpu-temperature",
+      "script": "<script-expression>",
+      "cron": "<cron-expression>"
+    }
+  ]
+}
+``` 

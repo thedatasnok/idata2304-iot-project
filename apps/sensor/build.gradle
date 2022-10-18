@@ -1,0 +1,4 @@
+plugins {
+  id 'no.ntnu.iir.idata2304.iot.java-application-conventions'
+}
+

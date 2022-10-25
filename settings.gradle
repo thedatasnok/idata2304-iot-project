@@ -15,13 +15,51 @@ include ':apps:sensor'
 dependencyResolutionManagement {
   versionCatalogs {
     libs {
+      // versions
+      version('spring-boot', springBootVersion)
       version('lombok', '1.18.24')
+      version('paho-mqttv5', '1.2.5')
+      version('liquibase', '4.16.1')
+
+      // plugins
+      plugin('spring-boot', 'org.springframework.boot').versionRef('spring-boot')
+      plugin('spring-dependencies', 'io.spring.dependency-management').version('1.0.14.RELEASE')
+
+      // spring boot starters
+      library('spring-starter', 'org.springframework.boot', 'spring-boot-starter').versionRef('spring-boot')
+      library('spring-starter-jpa', 'org.springframework.boot', 'spring-boot-starter-data-jpa').versionRef('spring-boot')
+      library('spring-starter-actuator', 'org.springframework.boot', 'spring-boot-starter-actuator').versionRef('spring-boot')
+
+      // other spring boot dependencies
+      library('spring-devtools', 'org.springframework.boot', 'spring-boot-devtools').versionRef('spring-boot')
+      library('spring-config-processor', 'org.springframework.boot', 'spring-boot-configuration-processor').versionRef('spring-boot')
+
+      library('spring-integration-mqtt', 'org.springframework.integration', 'spring-integration-mqtt').withoutVersion()
+      library('paho-mqttv5', 'org.eclipse.paho', 'org.eclipse.paho.mqttv5.client').versionRef('paho-mqttv5')
+
+      bundle('mqtt', ['spring-integration-mqtt', 'paho-mqttv5'])
+
+      library('sql-h2', 'com.h2database', 'h2').withoutVersion() // without version - should be resolved by spring plugin
+      library('liquibase', 'org.liquibase', 'liquibase-core').versionRef('liquibase')
 
       library('lombok', 'org.projectlombok', 'lombok').versionRef('lombok')
     }
 
     testLibs {
+      // versions
+      version('spring-boot', springBootVersion)
+      version('junit5', junitVersion)
 
+      // junit
+      library('junit-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit5')
+      library('junit-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit5')
+
+      bundle('junit', ['junit-api', 'junit-engine'])
+
+      // spring test
+      library('spring-starter-test', 'org.springframework.boot', 'spring-boot-starter-test').versionRef('spring-boot')
+
+      library('sql-h2', 'com.h2database', 'h2').withoutVersion() // without version - should be resolved by spring plugin
     }
   }
 }

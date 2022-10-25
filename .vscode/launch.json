@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch ingest",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "no.ntnu.iir.idata2304.iot.apps.ingest.IngestApplication",
+      "projectName": "ingest",
+      "args": "",
+      "envFile": "${workspaceFolder}/apps/ingest/.env"
+    },
+    {
+      "type": "java",
+      "name": "Launch sensor",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "no.ntnu.iir.idata2304.iot.apps.sensor.SensorApplication",
+      "projectName": "sensor",
+      "args": "",
+      "envFile": "${workspaceFolder}/apps/sensor/.env"
+    }
+  ]
+}

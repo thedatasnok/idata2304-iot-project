@@ -1,3 +1,30 @@
 plugins {
+  alias libs.plugins.spring.boot
+  alias libs.plugins.spring.dependencies
   id 'no.ntnu.iir.idata2304.iot.java-application-conventions'
+}
+
+dependencies {
+  implementation libs.spring.starter
+  implementation libs.spring.starter.jpa
+  implementation libs.spring.starter.actuator
+  
+  implementation libs.bundles.mqtt
+
+  // TODO: uncomment when migrations are set up
+  // implementation libs.liquibase 
+  implementation libs.sql.h2
+
+  compileOnly libs.lombok
+
+  developmentOnly libs.spring.devtools
+
+  annotationProcessor libs.lombok
+  annotationProcessor libs.spring.config.processor
+
+  testImplementation testLibs.spring.starter.test
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
 }

@@ -30,6 +30,7 @@
 
 ✅ #6 Decide structure for MQTT protocol
 
+![sprint-1-backlog](../assets/sprint-1-backlog.png)
 
 ### Comments
 

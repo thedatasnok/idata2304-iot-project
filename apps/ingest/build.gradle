@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
   implementation libs.spring.starter
+  implementation libs.spring.starter.web
   implementation libs.spring.starter.jpa
   implementation libs.spring.starter.actuator
   

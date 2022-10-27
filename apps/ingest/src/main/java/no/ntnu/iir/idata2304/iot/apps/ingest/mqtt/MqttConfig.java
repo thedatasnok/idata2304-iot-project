@@ -17,7 +17,7 @@ public class MqttConfig {
   private InetAddress ipAddress;
 
   @Value("${ingest.mqtt.broker.port}")
-  private String port;
+  private Integer port;
 
   @Value("${ingest.mqtt.client.id}")
   private String clientId;
@@ -46,6 +46,6 @@ public class MqttConfig {
   }
 
   private String buildMqttServerUri() {
-    return String.format("%s:%s", this.ipAddress.getHostAddress(), this.port);
+    return String.format("%s:%d", this.ipAddress.getHostAddress(), this.port);
   }
 }

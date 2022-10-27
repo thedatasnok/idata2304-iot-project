@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "ingest.mqtt.broker.ip",
+      "type": "java.net.InetAddress",
+      "description": "The IP address of the MQTT broker to connect to"
+    },
+    {
+      "name": "ingest.mqtt.broker.port",
+      "type": "java.lang.Integer",
+      "description": "The port of the MQTT broker to connect to"
+    },
+    {
+      "name": "ingest.mqtt.client.id",
+      "type": "java.lang.String",
+      "description": "The client id to use when connecting to the MQTT broker"
+    }
+  ]
+}

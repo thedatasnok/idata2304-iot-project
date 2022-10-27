@@ -75,3 +75,6 @@ Marking turning off/on the light on the X-axis.
   ]
 }
 ``` 
+
+- Write integration tests for flows activated when a MQTT message is received.
+

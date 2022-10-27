@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 
       // spring boot starters
       library('spring-starter', 'org.springframework.boot', 'spring-boot-starter').versionRef('spring-boot')
+      library('spring-starter-web', 'org.springframework.boot', 'spring-boot-starter-web').versionRef('spring-boot')
       library('spring-starter-jpa', 'org.springframework.boot', 'spring-boot-starter-data-jpa').versionRef('spring-boot')
       library('spring-starter-actuator', 'org.springframework.boot', 'spring-boot-starter-actuator').versionRef('spring-boot')
 

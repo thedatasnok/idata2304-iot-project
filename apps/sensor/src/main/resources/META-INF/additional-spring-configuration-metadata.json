@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "sensor.mqtt.broker.ip",
+      "type": "java.net.InetAddress",
+      "description": "The ip address of the MQTT broker"
+    },
+    {
+      "name": "sensor.mqtt.broker.port",
+      "type": "java.lang.Integer",
+      "description": "The port of the MQTT broker"
+    },
+    {
+      "name": "sensor.mqtt.client.id",
+      "type": "java.lang.String",
+      "description": "The id of the client"
+    },
+    {
+      "name": "sensor.place.id",
+      "type": "java.lang.String",
+      "description": "The id of the sensor current place"
+    },
+    {
+      "name": "sensor.room.id",
+      "type": "java.lang.String",
+      "description": "The id of the sensor current room'"
+    },
+    {
+      "name": "sensor.id",
+      "type": "java.lang.Integer",
+      "description": "The id of the sensor"
+    }
+  ]
+}

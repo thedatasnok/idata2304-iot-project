@@ -50,4 +50,15 @@ public class Sensor {
     this.room = room;
   }
 
+  /**
+   * Returns the sensors identifier. (IdClass)
+   * 
+   * @return the sensors identifier
+   * 
+   * @see SensorIdentifier
+   */
+  public SensorIdentifier getIdentifier() {
+    return new SensorIdentifier(this.id, this.place, this.room);
+  }
+  
 }

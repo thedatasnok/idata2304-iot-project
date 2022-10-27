@@ -3,6 +3,7 @@ package no.ntnu.iir.idata2304.iot.apps.ingest.mqtt;
 import java.net.InetAddress;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.core.MessageProducer;
@@ -26,10 +27,12 @@ public class MqttConfig {
 
   private static final int TIMEOUT = 5000;
 
+  @Bean
   public MessageChannel mqttInputChannel() {
     return new DirectChannel();
   }
 
+  @Bean
   public MessageProducer inbound() {
     var adapter = new MqttPahoMessageDrivenChannelAdapter(
         this.buildMqttServerUri(), 
@@ -46,6 +49,6 @@ public class MqttConfig {
   }
 
   private String buildMqttServerUri() {
-    return String.format("%s:%d", this.ipAddress.getHostAddress(), this.port);
+    return String.format("tcp://%s:%d", this.ipAddress.getHostAddress(), this.port);
   }
 }

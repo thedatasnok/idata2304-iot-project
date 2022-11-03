@@ -21,7 +21,7 @@ const App = () => {
 
       <div className='flex-1 flex flex-row px-24 pb-24 overflow-hidden'>
         <div className='w-96 px-4 py-2 overflow-hidden flex flex-col flex-shrink-0'>
-          <h2 className='font-medium text-xl'>Sensors</h2>
+          <h2 className='font-semibold text-xl'>Sensors</h2>
 
           <SensorStatusIndicatorHints />
 

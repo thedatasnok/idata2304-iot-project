@@ -16,7 +16,7 @@ public class CpuTemperaturePoller {
 
   private final MqttGateway mqttGateway;
     
-  @Scheduled(fixedRate = 5000)
+  @Scheduled(cron = "0/5 * * * * *")
 	public void readTemperature() throws IOException {
     try {
       // TODO: Read the correct file sys/class/thermal/thermal_zone0/temp

@@ -12,6 +12,12 @@ repositories {
   mavenCentral()
 }
 
+java { 
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
 // bin directory... go away pls
 // this problem has been discussed in issue #634 in redhat-developer/vscode-java on github
 eclipse.classpath {

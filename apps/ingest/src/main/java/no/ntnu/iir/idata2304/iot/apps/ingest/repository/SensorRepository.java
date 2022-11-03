@@ -3,10 +3,12 @@ package no.ntnu.iir.idata2304.iot.apps.ingest.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.Sensor;
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.SensorIdentifier;
+import no.ntnu.iir.idata2304.iot.apps.ingest.projection.SensorListProjection;
 
 @RepositoryDefinition(
   domainClass = Sensor.class,
@@ -19,7 +21,15 @@ public interface SensorRepository {
    * 
    * @return a list of all sensors stored in the database
    */
-  List<Sensor> findAll();
+  @Query("""
+    SELECT new no.ntnu.iir.idata2304.iot.apps.ingest.projection.SensorListProjection(
+      sensor.id,
+      sensor.place,
+      sensor.room
+    )
+    FROM Sensor sensor
+  """)
+  List<SensorListProjection> findAll();
 
   /**
    * Finds a sensor from the database by it's id/primary key.

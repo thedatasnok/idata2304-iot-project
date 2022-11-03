@@ -6,16 +6,14 @@ interface SensorCardProps {
 
 const SensorCard: React.FC<SensorCardProps> = ({ id, place, room }) => {
   return (
-    <div>
-      <div className='divide-y-2 divide-zinc-600 grid grid-cols-1'>
-        <button className='text-white hover:bg-zinc-700 px-1.5 py-0.5'>
-          <span className='font-bold'>
-            {id}/{place}/{room}
-          </span>
-          <span className='pl-20 font-bold'>90°C</span>
-          <p className='text-[8px] text-right'>Updated 3s ago</p>
-        </button>
-      </div>
+    <div className='text-white px-1.5 py-0.5 w-full'>
+      <p className='flex flex-row justify-between'>
+        <span className='font-bold'>
+          {place}/{room}/{id}
+        </span>
+        <span className='font-bold text-xl'>90°C</span>
+      </p>
+      <p className='text-xs text-right'>Updated 3s ago</p>
     </div>
   );
 };

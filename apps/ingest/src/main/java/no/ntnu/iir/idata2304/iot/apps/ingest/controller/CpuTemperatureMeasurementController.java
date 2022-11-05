@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.RequiredArgsConstructor;
+import no.ntnu.iir.idata2304.iot.apps.ingest.event.listener.CpuTemperatureMeasurementEventForwarder;
 import no.ntnu.iir.idata2304.iot.apps.ingest.projection.CpuTemperatureMeasurementProjection;
 import no.ntnu.iir.idata2304.iot.apps.ingest.repository.CpuTemperatureMeasurementRepository;
 
@@ -20,6 +22,7 @@ import no.ntnu.iir.idata2304.iot.apps.ingest.repository.CpuTemperatureMeasuremen
 @RequestMapping("/api/v1/cpu-temperatures")
 public class CpuTemperatureMeasurementController {
   private final CpuTemperatureMeasurementRepository cpuTempRepository;
+  private final CpuTemperatureMeasurementEventForwarder measurementForwarder;
   
   /**
    * GET endpoint for finding all CPU temperature measurements after a given date.
@@ -33,6 +36,20 @@ public class CpuTemperatureMeasurementController {
     @RequestParam("after") @DateTimeFormat(iso = ISO.DATE_TIME) Date after
   ) {
     return ResponseEntity.ok(this.cpuTempRepository.findAllAfter(after));
+  }
+
+  /**
+   * GET endpoint for subscribing to Server Sent Events for CPU temperature measurements.
+   * 
+   * @return an SSE emitter emitting events for CPU temperature measurements
+   */
+  @GetMapping("/events")
+  public SseEmitter subscribe() {
+    var emitter = new SseEmitter();
+
+    this.measurementForwarder.addEmitter(emitter);
+
+    return emitter;
   }
 
 }

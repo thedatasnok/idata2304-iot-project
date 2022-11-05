@@ -1,5 +1,6 @@
 package no.ntnu.iir.idata2304.iot.apps.ingest.mqtt;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.ntnu.iir.idata2304.iot.apps.ingest.event.model.CpuTemperatureMeasurementCreatedEvent;
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.CpuTemperatureMeasurement;
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.Sensor;
 import no.ntnu.iir.idata2304.iot.apps.ingest.repository.CpuTemperatureMeasurementRepository;
@@ -20,6 +22,7 @@ import no.ntnu.iir.idata2304.iot.apps.ingest.repository.SensorRepository;
 public class CpuTemperatureMeasurementHandler implements MessageHandler {
   private final SensorRepository sensorRepository;
   private final CpuTemperatureMeasurementRepository cpuTempMeasurementRepository;
+  private final ApplicationEventPublisher eventPublisher;
   
   private static final String MQTT_TOPIC_HEADER = "mqtt_receivedTopic";
 
@@ -63,7 +66,7 @@ public class CpuTemperatureMeasurementHandler implements MessageHandler {
     );
 
     this.cpuTempMeasurementRepository.save(measurement);
-    // TODO: emit application event that will be piped through to subscribers
+    this.eventPublisher.publishEvent(new CpuTemperatureMeasurementCreatedEvent(measurement));
   }
 
   /**

@@ -7,10 +7,19 @@
  * in the user manual at https://docs.gradle.org/7.5.1/userguide/multi_project_builds.html
  * This project uses @Incubating APIs which are subject to change.
  */
+pluginManagement {
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    maven { url 'https://repo.spring.io/release' }
+  }
+}
+
 rootProject.name = 'idata2304-iot-project'
 
 include ':apps:ingest'
 include ':apps:sensor'
+include ':apps:frontend'
 
 dependencyResolutionManagement {
   versionCatalogs {
@@ -18,7 +27,7 @@ dependencyResolutionManagement {
       // versions
       version('spring-boot', springBootVersion)
       version('lombok', '1.18.24')
-      version('paho-mqttv5', '1.2.5')
+      version('paho-mqttv3', '1.2.5')
       version('liquibase', '4.16.1')
 
       // plugins
@@ -36,9 +45,9 @@ dependencyResolutionManagement {
       library('spring-config-processor', 'org.springframework.boot', 'spring-boot-configuration-processor').versionRef('spring-boot')
 
       library('spring-integration-mqtt', 'org.springframework.integration', 'spring-integration-mqtt').withoutVersion()
-      library('paho-mqttv5', 'org.eclipse.paho', 'org.eclipse.paho.mqttv5.client').versionRef('paho-mqttv5')
+      library('paho-mqttv3', 'org.eclipse.paho', 'org.eclipse.paho.client.mqttv3').versionRef('paho-mqttv3')
 
-      bundle('mqtt', ['spring-integration-mqtt', 'paho-mqttv5'])
+      bundle('mqtt', ['spring-integration-mqtt', 'paho-mqttv3'])
 
       library('sql-h2', 'com.h2database', 'h2').withoutVersion() // without version - should be resolved by spring plugin
       library('liquibase', 'org.liquibase', 'liquibase-core').versionRef('liquibase')

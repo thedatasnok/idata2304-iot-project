@@ -1,0 +1,14 @@
+plugins {
+  id 'com.github.node-gradle.node' version '3.4.0'
+}
+
+node {
+  download = false
+  version = '18.12.0'
+  pnpmVersion = '7.14.1'
+}
+
+task buildProduction(type: PnpmTask) {
+  dependsOn pnpmInstall
+  pnpmCommand = ['build']
+}

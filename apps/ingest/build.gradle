@@ -25,6 +25,15 @@ dependencies {
   testImplementation testLibs.spring.starter.test
 }
 
+task copyFrontend(type: Copy) {
+ from "$rootDir/apps/frontend/dist"
+ into "$rootDir/apps/ingest/build/resources/main/static/."
+}
+
+copyFrontend.dependsOn(":apps:frontend:buildProduction")
+bootJar.dependsOn(copyFrontend)
+bootJarMainClassName.dependsOn(copyFrontend)
+
 tasks.named('test') {
   useJUnitPlatform()
 }

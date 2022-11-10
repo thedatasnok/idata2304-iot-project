@@ -8,20 +8,30 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.ntnu.iir.idata2304.iot.apps.sensor.mqtt.MqttGateway;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CpuTemperaturePoller {
-
   private final MqttGateway mqttGateway;
+
+  private static final Path CPU_TEMP_FILE_PATH = Path.of("/sys/class/thermal/thermal_zone0/temp");
     
   @Scheduled(cron = "0/5 * * * * *")
 	public void readTemperature() throws IOException {
     try {
-      // TODO: Read the correct file sys/class/thermal/thermal_zone0/temp
-      var path = Path.of(this.getClass().getClassLoader().getResource("number.txt").toURI());
-      int temperature = Integer.parseInt(Files.readString(path));
+      if (!Files.exists(CPU_TEMP_FILE_PATH)) {
+        log.warn(
+          "Could not find the file to read the CPU temperature from! ({})", 
+          CPU_TEMP_FILE_PATH
+        );
+        
+        return;
+      }
+
+      int temperature = Integer.parseInt(Files.readString(CPU_TEMP_FILE_PATH));
       Float temperatureValue = (temperature / 1000f);
       this.mqttGateway.sendToMqtt(temperatureValue.toString().getBytes());
     } catch (Exception e) {

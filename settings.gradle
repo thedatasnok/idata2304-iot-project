@@ -19,6 +19,7 @@ rootProject.name = 'idata2304-iot-project'
 
 include ':apps:ingest'
 include ':apps:sensor'
+include ':apps:frontend'
 
 dependencyResolutionManagement {
   versionCatalogs {

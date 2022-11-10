@@ -21,10 +21,16 @@ dependencies {
   testImplementation testLibs.spring.starter.test
 }
 
-jar {
-  exclude 'META-INF/*'
-}
-
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+graalvmNative {
+  binaries {
+    main {
+      buildArgs.add('-H:IncludeResourceBundles=org.eclipse.paho.client.mqttv3.internal.nls.logcat,org.eclipse.paho.client.mqttv3.internal.nls.messages')
+      buildArgs.add('-H:ReflectionConfigurationResources=reflection-config.json')
+      buildArgs.add('-H:+ReportExceptionStackTraces')
+    }
+  }
 }

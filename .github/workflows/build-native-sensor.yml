@@ -1,0 +1,31 @@
+name: Sensor native image builds
+
+on: 
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Sensor on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'gradle'
+
+      - name: Build native Image
+        run: gradle :apps:sensor:nativeCompile
+      
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: poller-${{ matrix.os }}
+          path: apps/sensor/build/native/nativeCompile/*

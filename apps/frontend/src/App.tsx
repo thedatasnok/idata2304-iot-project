@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -10,16 +11,174 @@ import {
 import SensorCard from './components/card/SensorCard';
 import Card from './components/container/Card';
 import SensorStatusIndicatorHints from './components/indicator/SensorStatusIndicatorHints';
+import dayjs from 'dayjs';
+
+interface CpuTemperatureMeasurementProjection {
+  id: number;
+  temperature: number;
+  sensorId: number;
+  sensorPlace: string;
+  sensorRoom: string;
+  measuredAt: string;
+}
+
+interface SensorListProjection {
+  id: number;
+  place: string;
+  room: string;
+}
+
+interface CpuTemperatureMeasurementData {
+  /**
+   * gbfur/room/1 = [..., ..., ...]
+   */
+  [key: string]: CpuTemperatureMeasurementProjection[];
+}
+
+const convertSensorDataToKey = (
+  measurement: CpuTemperatureMeasurementProjection
+) => {
+  return `${measurement.sensorPlace}/${measurement.sensorRoom}/${measurement.sensorId}`;
+};
 
 const App = () => {
+  const [measurements, setMeasurements] =
+    useState<CpuTemperatureMeasurementData>({});
+  const [sensors, setSensors] = useState<SensorListProjection[]>([]);
+  const [ticks, setTicks] = useState<number[]>([]);
+
+  const TICK_INTERVAL_SECONDS = 20;
+
+  /**
+   * Subscribe to events when a new temperature measurement is stored.
+   */
+  useEffect(() => {
+    const eventSource = new EventSource('/api/v1/cpu-temperatures/events');
+    eventSource.onmessage = (event) => {
+      const newMeasurement: CpuTemperatureMeasurementProjection = JSON.parse(
+        event.data
+      );
+
+      const key = convertSensorDataToKey(newMeasurement);
+
+      setMeasurements((old) => ({
+        ...old,
+        [key]: [
+          ...old[key].slice(old[key].length > 59 ? 1 : 0, old[key].length),
+          newMeasurement,
+        ],
+      }));
+
+      return () => eventSource.close();
+    };
+  }, []);
+
+  /**
+   * Fetch initial temperature mesaurement within the last five minutes.
+   */
+  useEffect(() => {
+    fetch(
+      '/api/v1/cpu-temperatures?after=' +
+        dayjs().subtract(5, 'minutes').startOf('minute').toISOString()
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((data: CpuTemperatureMeasurementProjection[]) => {
+        const map: CpuTemperatureMeasurementData = {};
+
+        data.forEach((measurement) => {
+          const key = convertSensorDataToKey(measurement);
+
+          if (map[key] === undefined) {
+            map[key] = [];
+          }
+
+          map[key].push(measurement);
+        });
+
+        setMeasurements(map);
+      });
+  }, []);
+
+  /**
+   * Fetch stored sensors
+   */
+  useEffect(() => {
+    fetch('/api/v1/sensors')
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setSensors(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    const end = dayjs();
+    end.set(
+      'seconds',
+      Math.round(end.second() / TICK_INTERVAL_SECONDS) * TICK_INTERVAL_SECONDS
+    );
+    end.set('millisecond', 0);
+    const start = end.subtract(5, 'minutes');
+    let ticks: number[] = [];
+
+    let current = start;
+
+    while (current.isBefore(end)) {
+      current = current.add(TICK_INTERVAL_SECONDS, 'seconds');
+      ticks.push(current.toDate().getTime());
+    }
+
+    //console.log(ticks);
+
+    setTicks(ticks);
+    //console.log(ticks);
+
+    const interval = setInterval(() => {
+      setTicks((old) => [
+        ...old.slice(1, old.length),
+        dayjs(old[old.length - 1])
+          .add(TICK_INTERVAL_SECONDS, 'seconds')
+          .toDate()
+          .getTime(),
+      ]);
+      //console.log(ticks);
+    }, TICK_INTERVAL_SECONDS * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
+
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
+}
+
+console.log(hashCode("gbfur/room/1"))
+
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
       <h1 className='font-bold text-2xl text-center py-2 bg-zinc-800 border-b border-zinc-700 md:bg-transparent md:border-transparent'>
         <span className='text-white'>anti</span>
         <span className='text-amber-600'>boom</span>
       </h1>
-      
-      <a href='https://github.com/thedatasnok/idata2304-iot-project' className='fixed top-4 right-2 text-amber-600 font-semibold text-sm'>
+
+      <a
+        href='https://github.com/thedatasnok/idata2304-iot-project'
+        className='fixed top-4 right-2 text-amber-600 font-semibold text-sm'
+      >
         github
       </a>
 
@@ -28,14 +187,17 @@ const App = () => {
           <h2 className='font-semibold text-xl'>Sensors</h2>
 
           <SensorStatusIndicatorHints />
-
           <div className='flex flex-col overflow-y-auto gap-2 p-1'>
-            {[...Array(30)].map((_, i) => (
+            {sensors.map((sensor) => (
               <Card
-                key={i + 1}
+                key={`${sensor.place}-${sensor.room}-${sensor.id}`}
                 className='p-2 hover:bg-zinc-700 border-l-4 transition-all border-green-500 cursor-pointer'
               >
-                <SensorCard id={i + 1} place='snk1' room='room' />
+                <SensorCard
+                  id={sensor.id}
+                  place={sensor.place}
+                  room={sensor.room}
+                />
               </Card>
             ))}
           </div>
@@ -43,26 +205,32 @@ const App = () => {
 
         <div className='flex-1 w-full'>
           <ResponsiveContainer width='99%'>
-            <LineChart
-              data={[]}
-              margin={{
-                top: 65,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-            >
+            <LineChart>
               <CartesianGrid strokeDasharray='3 3' />
-              <XAxis dataKey='name' />
+              <XAxis
+                tickFormatter={(_, idx) => {
+                  return dayjs(ticks[idx]).format('HH:mm:ss');
+                }}
+                minTickGap={-200}
+                angle={0}
+                dy={0}
+                interval={3}
+              />
+
               <YAxis />
               <Legend />
-              <Line
-                type='linear'
-                dataKey='snk/room/1'
-                stroke='#FFFFFF'
-                activeDot={{ r: 8 }}
-              />
-              <Line type='linear' dataKey='snk/room/2' stroke='#d97706' />
+              {Object.keys(measurements).map((sensorKey) => (
+                <Line
+                  key={sensorKey}
+                  name={sensorKey}
+                  type='linear'
+                  isAnimationActive={false}
+                  data={measurements[sensorKey]}
+                  dataKey='temperature'
+                  stroke='#FFFFFF'
+                  activeDot={{ r: 8 }}
+                />
+              ))}
             </LineChart>
           </ResponsiveContainer>
         </div>

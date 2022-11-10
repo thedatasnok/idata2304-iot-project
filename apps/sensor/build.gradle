@@ -21,6 +21,10 @@ dependencies {
   testImplementation testLibs.spring.starter.test
 }
 
+jar {
+  exclude 'META-INF/*'
+}
+
 tasks.named('test') {
   useJUnitPlatform()
 }

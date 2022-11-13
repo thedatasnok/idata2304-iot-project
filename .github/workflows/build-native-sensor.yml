@@ -5,11 +5,8 @@ on:
     
 jobs:
   build:
-    name: Sensor on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+    name: Sensor on Ubuntu ARM64
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -21,11 +18,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'gradle'
 
-      - name: Build native Image
-        run: gradle :apps:sensor:nativeCompile
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run build on arm64
+        id: runcmd
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+
+          run: gradle :apps:sensor:nativeCompile
       
       - name: Upload binary
         uses: actions/upload-artifact@v3
         with:
-          name: poller-${{ matrix.os }}
+          name: sensor-native-arm64
           path: apps/sensor/build/native/nativeCompile/*

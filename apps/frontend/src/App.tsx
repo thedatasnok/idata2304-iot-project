@@ -150,23 +150,22 @@ const App = () => {
     return () => clearInterval(interval);
   }, []);
 
-  function hashCode(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  function hashCode(str: string) {
+    // java String#hashCode
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     return hash;
-} 
+  }
 
-function intToRGB(i){
-    var c = (i & 0x00FFFFFF)
-        .toString(16)
-        .toUpperCase();
+  function intToRGB(i: number) {
+    const c = (i & 0x00ffffff).toString(16).toUpperCase();
 
-    return "00000".substring(0, 6 - c.length) + c;
-}
+    return '00000'.substring(0, 6 - c.length) + c;
+  }
 
-console.log(hashCode("gbfur/room/1"))
+  console.log(hashCode('gbfur/room/1'));
 
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
@@ -207,15 +206,6 @@ console.log(hashCode("gbfur/room/1"))
           <ResponsiveContainer width='99%'>
             <LineChart>
               <CartesianGrid strokeDasharray='3 3' />
-              <XAxis
-                tickFormatter={(_, idx) => {
-                  return dayjs(ticks[idx]).format('HH:mm:ss');
-                }}
-                minTickGap={-200}
-                angle={0}
-                dy={0}
-                interval={3}
-              />
 
               <YAxis />
               <Legend />

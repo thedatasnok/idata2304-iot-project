@@ -1,9 +1,11 @@
 #!/bin/bash
+cd ~
+
 curl -s https://api.github.com/repos/thedatasnok/idata2304-iot-project/releases/latest \
   | grep "browser_download_url.*sensor" \
   | cut -d : -f 2,3 \
   | tr -d \" \
-  | wget -qi -P ~/ab-sensor/
+  | xargs wget --directory-prefix=./ab-sensor/
 
 echo "[Unit]
 Description=Antiboom sensor node

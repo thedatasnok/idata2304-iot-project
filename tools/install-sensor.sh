@@ -5,7 +5,7 @@ curl -s https://api.github.com/repos/thedatasnok/idata2304-iot-project/releases/
   | grep "browser_download_url.*sensor" \
   | cut -d : -f 2,3 \
   | tr -d \" \
-  | xargs wget --directory-prefix=./ab-sensor/
+  | xargs wget --directory-prefix=/var/ab-sensor/
 
 echo "[Unit]
 Description=Antiboom sensor node
@@ -17,7 +17,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=root
-ExecStart=~/ab-sensor/sensor
+ExecStart=/var/ab-sensor/sensor
 
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/ab-sensor-service.service

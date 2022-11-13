@@ -1,0 +1,78 @@
+name: Release to GitHub
+
+on:
+  push:
+    tags:
+      - v*.*.*
+    
+jobs:
+  build-ingest:
+    name: Build ingest artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      
+      - name: Build ingest app
+        run: gradle :apps:ingest:build
+
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ingest-jar
+          path: apps/ingest/build/libs/*.jar
+
+  build-sensor:
+    name: Build sensor artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'gradle'
+
+      - name: Build Native Image
+        run: gradle :apps:sensor:nativeCompile
+      
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sensor-native-ubuntu
+          path: apps/sensor/build/native/nativeCompile/sensor
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: 
+      - build-ingest
+      - build-sensor
+
+    steps:
+      - name: Download Ingest artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ingest-jar
+
+      - name: Download Sensor artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: sensor-native-ubuntu
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: "*changelog tbd*"
+          files: ./*

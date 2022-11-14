@@ -29,18 +29,11 @@ jobs:
           path: apps/ingest/build/libs/*.jar
 
   build-sensor:
-    name: Build sensor artifacts
-    runs-on: ubuntu-latest
+    name: Build sensor arm64 artifacts
+    runs-on: [self-hosted, linux, arm64]
+    
     steps:
       - uses: actions/checkout@v3
-
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: '22.3.0'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: 'gradle'
 
       - name: Build Native Image
         run: gradle :apps:sensor:nativeCompile
@@ -48,7 +41,7 @@ jobs:
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sensor-native-ubuntu
+          name: sensor-native-arm64
           path: apps/sensor/build/native/nativeCompile/sensor
 
   create-release:
@@ -64,10 +57,10 @@ jobs:
         with:
           name: ingest-jar
 
-      - name: Download Sensor artifacts
+      - name: Download Sensor arm64 artifacts
         uses: actions/download-artifact@v3
         with:
-          name: sensor-native-ubuntu
+          name: sensor-native-arm64
 
       - name: Create release
         uses: softprops/action-gh-release@v1

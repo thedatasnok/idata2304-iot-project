@@ -31,12 +31,15 @@ public class CpuTemperaturePoller {
         return;
       }
 
-      // reads the temperature file as a string, replaces any non digit characters
+      // reads the temperature file as a string, removes any whitespace characters
       // and parses it as an integer
       int temperature = Integer.parseInt(
-        Files.readString(CPU_TEMP_FILE_PATH).replace("\\D", "")
+        Files.readString(CPU_TEMP_FILE_PATH).replaceAll("\\s", "")
       );
+
       Float temperatureValue = (temperature / 1000f);
+
+      log.info("Logging CPU temperature: {}C to MQTT broker", temperatureValue);
       this.mqttGateway.sendToMqtt(temperatureValue.toString().getBytes());
     } catch (Exception e) {
       e.printStackTrace();

@@ -32,7 +32,7 @@ public interface CpuTemperatureMeasurementRepository {
       measurement.sensor.id,
       measurement.sensor.place,
       measurement.sensor.room,
-      measurement.measuredAt
+      function('DATE_TRUNC', 'second', measurement.measuredAt)
     )
     FROM CpuTemperatureMeasurement measurement
     WHERE measurement.measuredAt > :after

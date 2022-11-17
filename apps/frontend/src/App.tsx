@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
   CartesianGrid,
+  Label,
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -178,7 +180,7 @@ const App = () => {
                 tickCount={(MINUTES_TO_SHOW * 60) / TICK_INTERVAL_SECONDS}
                 tickFormatter={(tick: number) => dayjs(tick).format('HH:mm:ss')}
               />
-              <YAxis />
+              <YAxis domain={[0, 100]} />
               <Legend />
               {Object.keys(measurements).map((sensorKey) => (
                 <Line
@@ -192,6 +194,12 @@ const App = () => {
                   dot={{ r: 4, fill: intToRGB(hashCode(sensorKey)) }}
                 />
               ))}
+              <ReferenceLine
+                y={85}
+                stroke='rgb(239 68 68)' // text-red-500
+                strokeDasharray='3 3'
+                label={<Label value='Boom' position={'left'} fill='rgb(239 68 68)' />}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

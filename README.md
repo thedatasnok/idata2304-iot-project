@@ -59,10 +59,46 @@ You can read more about the technologies we used and why [here](docs/technologie
 ## 3 Getting started
 
 ### 3.1 Setup
-...
+In order to set up or install the software you will need the following: 
+- An ARM64 sensor node runnning a debian based operating system
+- A computer with Java 17 (LTS) installed
+
+### 3.1.1 Installing sensor nodes
+This step requires you to have an ARM64 based computer with running a Debian based operating system. 
+During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
+
+1. Log in as or elevate your shell to the root user.
+    `sudo su`
+
+2. Run the following to invoke the install script: 
+    `bash <(curl -s https://raw.githubusercontent.com/thedatasnok/idata2304-iot-project/main/tools/install-sensor.sh)`
+
+3. Fill out details about the MQTT connection
+    **Note:** the client needs to be unique per client
+  
+### 3.1.2 Installing the ingest/visualization node
+This step can be run on any computer compatible with Java 17, installing Java is a prerequisite. 
+For instance, on a debian based system, it can be installed running: `apt install openjdk-17-jre-headless`
+
+1. Download the latest version of ingest from [GitHub][release-latest]
+
+2. Set up environment variables for the service, an exhaustive list of required variables:
+    `DB_USERNAME` the database username to use
+    `DB_PASSWORD` the database password to use
+    `MQTT_BROKER_IP` the MQTT brokers IP address
+    `MQTT_BROKER_PORT` the MQTT brokers port
+    `MQTT_CLIENT_ID` the unique client id for this application
+
+3. Run the application `java -jar ingest-1.0.0.jar`
+
 
 ### 3.2 Usage
-...
+
+Once the ingest/visualization node is set up as described in [3.1.2](#312-installing-the-ingestvisualization-node), you can open up the user interface by visiting: http://localhost:8080/ in your browser.
+
+
+The sensor node is meant to run in the background unattended, but in case of errors you can control the service using `systemctl`. 
+
 
 <br />
 
@@ -90,3 +126,5 @@ TODO: add links to technologies
 [vite]: https://
 [tailwind-css]: https://
 [recharts]: https://
+
+[release-latest]: https://github.com/thedatasnok/idata2304-iot-project/releases/latest

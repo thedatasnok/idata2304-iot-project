@@ -50,7 +50,7 @@ const App = () => {
 
   const TICK_INTERVAL_SECONDS = 5;
   const MINUTES_TO_SHOW = 2;
-  const SLICE_INDEX = MINUTES_TO_SHOW * 60 / TICK_INTERVAL_SECONDS - 1;
+  const SLICE_INDEX = (MINUTES_TO_SHOW * 60) / TICK_INTERVAL_SECONDS - 1;
 
   /**
    * Subscribe to events when a new temperature measurement is stored.
@@ -67,7 +67,10 @@ const App = () => {
       setMeasurements((old) => ({
         ...old,
         [key]: [
-          ...old[key].slice(old[key].length > SLICE_INDEX ? 1 : 0, old[key].length),
+          ...old[key].slice(
+            old[key].length > SLICE_INDEX ? 1 : 0,
+            old[key].length
+          ),
           newMeasurement,
         ],
       }));
@@ -129,7 +132,7 @@ const App = () => {
   function intToRGB(i: number) {
     const c = (i & 0x00ffffff).toString(16).toUpperCase();
 
-    return '00000'.substring(0, 6 - c.length) + c;
+    return '#' + '00000'.substring(0, 6 - c.length) + c;
   }
 
   return (
@@ -177,7 +180,7 @@ const App = () => {
                 domain={['dataMin', 'dataMax']}
                 scale='time'
                 interval='preserveEnd'
-                tickCount={MINUTES_TO_SHOW * 60 / TICK_INTERVAL_SECONDS}
+                tickCount={(MINUTES_TO_SHOW * 60) / TICK_INTERVAL_SECONDS}
                 tickFormatter={(tick: number) => dayjs(tick).format('HH:mm:ss')}
               />
               <YAxis domain={[0, 100]} />
@@ -190,8 +193,8 @@ const App = () => {
                   isAnimationActive={false}
                   data={measurements[sensorKey]}
                   dataKey='temperature'
-                  stroke='#FFFFFF'
-                  activeDot={{ r: 8 }}
+                  stroke={intToRGB(hashCode(sensorKey))}
+                  dot={{ r: 4, fill: intToRGB(hashCode(sensorKey)) }}
                 />
               ))}
               <ReferenceLine

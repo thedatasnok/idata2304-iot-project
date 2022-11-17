@@ -45,7 +45,6 @@ const App = () => {
   const [measurements, setMeasurements] =
     useState<CpuTemperatureMeasurementData>({});
   const [sensors, setSensors] = useState<SensorListProjection[]>([]);
-  const [ticks, setTicks] = useState<string[]>([]);
 
   const TICK_INTERVAL_SECONDS = 5;
   const MINUTES_TO_SHOW = 2;
@@ -116,37 +115,6 @@ const App = () => {
       });
   }, []);
 
-  useEffect(() => {
-    let end = dayjs().startOf('second');
-    end = end.set(
-      'seconds',
-      Math.round(end.second() / TICK_INTERVAL_SECONDS) * TICK_INTERVAL_SECONDS
-    );
-    const start = end.subtract(MINUTES_TO_SHOW, 'minutes');
-    let ticks: string[] = [];
-
-    let current = start;
-
-    while (current.isBefore(end)) {
-      current = current.add(TICK_INTERVAL_SECONDS, 'seconds');
-      ticks.push(current.toDate().toISOString());
-    }
-
-    setTicks(ticks);
-
-    const interval = setInterval(() => {
-      setTicks((old) => [
-          ...old.slice(1, old.length),
-          dayjs(old[old.length - 1])
-            .add(TICK_INTERVAL_SECONDS, 'seconds')
-            .toDate()
-            .toISOString(),
-        ]);
-    }, TICK_INTERVAL_SECONDS * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   function hashCode(str: string) {
     // java String#hashCode
     let hash = 0;
@@ -202,10 +170,13 @@ const App = () => {
             <LineChart>
               <CartesianGrid strokeDasharray='3 3' />
               <XAxis
-                type='category'
+                type='number'
                 dataKey='measuredAt'
-                ticks={ticks}
-                tickFormatter={(tick) => dayjs(tick).format('HH:mm:ss')}
+                domain={['dataMin', 'dataMax']}
+                scale='time'
+                interval='preserveEnd'
+                tickCount={MINUTES_TO_SHOW * 60 / TICK_INTERVAL_SECONDS}
+                tickFormatter={(tick: number) => dayjs(tick).format('HH:mm:ss')}
               />
               <YAxis />
               <Legend />

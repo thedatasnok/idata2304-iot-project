@@ -1,10 +1,8 @@
 package no.ntnu.iir.idata2304.iot.apps.ingest.event.listener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -33,9 +31,7 @@ public class CpuTemperatureMeasurementEventForwarder {
   public void onCpuMeasurementCreated(CpuTemperatureMeasurementCreatedEvent createdMeasurement) {
     try {
       for (SseEmitter emitter : this.emitters) {
-        var measurement = createdMeasurement.getMeasurement();
-        var truncatedDate = DateUtils.truncate(measurement.getMeasuredAt(), Calendar.SECOND);
-        measurement.setMeasuredAt(truncatedDate);
+        createdMeasurement.getMeasurement().truncateSeconds();
         emitter.send(createdMeasurement.getMeasurement());
       }
     } catch (Exception e) {

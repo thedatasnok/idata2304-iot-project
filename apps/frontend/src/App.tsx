@@ -45,9 +45,11 @@ const App = () => {
   const [measurements, setMeasurements] =
     useState<CpuTemperatureMeasurementData>({});
   const [sensors, setSensors] = useState<SensorListProjection[]>([]);
-  const [ticks, setTicks] = useState<number[]>([]);
+  const [ticks, setTicks] = useState<string[]>([]);
 
-  const TICK_INTERVAL_SECONDS = 20;
+  const TICK_INTERVAL_SECONDS = 5;
+  const MINUTES_TO_SHOW = 2;
+  const SLICE_INDEX = MINUTES_TO_SHOW * 60 / TICK_INTERVAL_SECONDS - 1;
 
   /**
    * Subscribe to events when a new temperature measurement is stored.
@@ -64,7 +66,7 @@ const App = () => {
       setMeasurements((old) => ({
         ...old,
         [key]: [
-          ...old[key].slice(old[key].length > 59 ? 1 : 0, old[key].length),
+          ...old[key].slice(old[key].length > SLICE_INDEX ? 1 : 0, old[key].length),
           newMeasurement,
         ],
       }));
@@ -79,7 +81,7 @@ const App = () => {
   useEffect(() => {
     fetch(
       '/api/v1/cpu-temperatures?after=' +
-        dayjs().subtract(5, 'minutes').startOf('minute').toISOString()
+        dayjs().subtract(MINUTES_TO_SHOW, 'minutes').toISOString()
     )
       .then((res) => {
         return res.json();
@@ -115,36 +117,31 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const end = dayjs();
-    end.set(
+    let end = dayjs().startOf('second');
+    end = end.set(
       'seconds',
       Math.round(end.second() / TICK_INTERVAL_SECONDS) * TICK_INTERVAL_SECONDS
     );
-    end.set('millisecond', 0);
-    const start = end.subtract(5, 'minutes');
-    let ticks: number[] = [];
+    const start = end.subtract(MINUTES_TO_SHOW, 'minutes');
+    let ticks: string[] = [];
 
     let current = start;
 
     while (current.isBefore(end)) {
       current = current.add(TICK_INTERVAL_SECONDS, 'seconds');
-      ticks.push(current.toDate().getTime());
+      ticks.push(current.toDate().toISOString());
     }
 
-    //console.log(ticks);
-
     setTicks(ticks);
-    //console.log(ticks);
 
     const interval = setInterval(() => {
       setTicks((old) => [
-        ...old.slice(1, old.length),
-        dayjs(old[old.length - 1])
-          .add(TICK_INTERVAL_SECONDS, 'seconds')
-          .toDate()
-          .getTime(),
-      ]);
-      //console.log(ticks);
+          ...old.slice(1, old.length),
+          dayjs(old[old.length - 1])
+            .add(TICK_INTERVAL_SECONDS, 'seconds')
+            .toDate()
+            .toISOString(),
+        ]);
     }, TICK_INTERVAL_SECONDS * 1000);
 
     return () => clearInterval(interval);
@@ -164,8 +161,6 @@ const App = () => {
 
     return '00000'.substring(0, 6 - c.length) + c;
   }
-
-  console.log(hashCode('gbfur/room/1'));
 
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
@@ -206,7 +201,12 @@ const App = () => {
           <ResponsiveContainer width='99%'>
             <LineChart>
               <CartesianGrid strokeDasharray='3 3' />
-
+              <XAxis
+                type='category'
+                dataKey='measuredAt'
+                ticks={ticks}
+                tickFormatter={(tick) => dayjs(tick).format('HH:mm:ss')}
+              />
               <YAxis />
               <Legend />
               {Object.keys(measurements).map((sensorKey) => (

@@ -12,21 +12,11 @@ import SensorCard from './components/card/SensorCard';
 import Card from './components/container/Card';
 import SensorStatusIndicatorHints from './components/indicator/SensorStatusIndicatorHints';
 import dayjs from 'dayjs';
-
-interface CpuTemperatureMeasurementProjection {
-  id: number;
-  temperature: number;
-  sensorId: number;
-  sensorPlace: string;
-  sensorRoom: string;
-  measuredAt: string;
-}
-
-interface SensorListProjection {
-  id: number;
-  place: string;
-  room: string;
-}
+import {
+  CpuTemperatureMeasurementProjection,
+  SensorListDetails,
+} from './types';
+import { hashCode, intToRGB } from './utils/color';
 
 interface CpuTemperatureMeasurementData {
   /**
@@ -44,7 +34,7 @@ const convertSensorDataToKey = (
 const App = () => {
   const [measurements, setMeasurements] =
     useState<CpuTemperatureMeasurementData>({});
-  const [sensors, setSensors] = useState<SensorListProjection[]>([]);
+  const [sensors, setSensors] = useState<SensorListDetails[]>([]);
 
   const TICK_INTERVAL_SECONDS = 5;
   const MINUTES_TO_SHOW = 2;
@@ -118,20 +108,31 @@ const App = () => {
       });
   }, []);
 
-  function hashCode(str: string) {
-    // java String#hashCode
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
-  }
+  /**
+   * Whenever measurements are updated - update the sensor details to
+   * include the last measured temperature and timestamp.
+   */
+  useEffect(() => {
+    Object.keys(measurements).forEach((sensorKey) => {
+      const sensorMeasurements = measurements[sensorKey];
+      const lastMeasurement = sensorMeasurements[sensorMeasurements.length - 1];
 
-  function intToRGB(i: number) {
-    const c = (i & 0x00ffffff).toString(16).toUpperCase();
+      setSensors((oldSensors) => {
+        return oldSensors.map((sensor) => {
+          if (
+            sensor.id === lastMeasurement.sensorId &&
+            sensor.room === lastMeasurement.sensorRoom &&
+            sensor.place === lastMeasurement.sensorPlace
+          ) {
+            sensor.lastMeasuredAt = lastMeasurement.measuredAt;
+            sensor.lastMeasuredTemperature = lastMeasurement.temperature;
+          }
 
-    return '#' + '00000'.substring(0, 6 - c.length) + c;
-  }
+          return sensor;
+        });
+      });
+    });
+  }, [measurements]);
 
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
@@ -158,11 +159,7 @@ const App = () => {
                 key={`${sensor.place}-${sensor.room}-${sensor.id}`}
                 className='p-2 hover:bg-zinc-700 border-l-4 transition-all border-green-500 cursor-pointer'
               >
-                <SensorCard
-                  id={sensor.id}
-                  place={sensor.place}
-                  room={sensor.room}
-                />
+                <SensorCard {...sensor} />
               </Card>
             ))}
           </div>

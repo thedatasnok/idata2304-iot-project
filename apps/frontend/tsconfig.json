@@ -12,9 +12,13 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "." 
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

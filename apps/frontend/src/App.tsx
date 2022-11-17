@@ -169,7 +169,11 @@ const App = () => {
 
         <div className='flex-1 w-full'>
           <ResponsiveContainer width='99%'>
-            <LineChart>
+            <LineChart
+              margin={{
+                right: 60,
+              }}
+            >
               <CartesianGrid strokeDasharray='3 3' />
               <XAxis
                 type='number'
@@ -197,8 +201,17 @@ const App = () => {
               <ReferenceLine
                 y={85}
                 stroke='rgb(239 68 68)' // text-red-500
-                strokeDasharray='3 3'
-                label={<Label value='Boom' position={'left'} fill='rgb(239 68 68)' />}
+                strokeDasharray='5 5'
+                strokeWidth={2}
+                label={
+                  <Label
+                    value='boom! 🧨'
+                    fontSize={12}
+                    fontWeight={600}
+                    position={'right'}
+                    fill='rgb(239 68 68)'
+                  />
+                }
               />
             </LineChart>
           </ResponsiveContainer>

@@ -118,7 +118,11 @@ The sensor node is meant to run in the background unattended, but in case of err
 </a>
 
 ## 4 Methodology
-This project has been developed in 1 week long sprints. Each of the sprints are documented [here](docs/sprints/index.md).
+Antiboom has been developed in 1 week long sprints, with each of the sprints documented [here](docs/sprints/index.md). This was done both to fullfill one of the project requirements (use of agile work methodology), but also because we have had positive former experiences with this type of workflow and believed it would work just as well for this assignment.
+
+Starting the week the assignment was handed out, our group used every tuesday to finalize a sprint and start a new one. This included discussing and writing a short report about the sprint, as well as planning, defining and assigning tasks as issues on our [GitHub issue board](https://github.com/users/thedatasnok/projects/2/). This usually went by smoothly as we had no problems distributing the issues according to our interests while keeping the workload mostly fair.
+
+Each thursday, we used the available classroom hours to meet in person and work on the project together. We did this to clear up any potential confusion about the assigned work, as well as help each other with mostly, but not only, programming-specific things.
 
 
 TODO: add links to technologies

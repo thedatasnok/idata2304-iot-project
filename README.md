@@ -23,7 +23,14 @@ The project requires a minimum of two nodes programmed by the students, which is
 
 You can read more about the architecture [here](docs/architecture.md).
 
-### 2.1 Technologies used
+### 2.1 Protocols used
+We can narrow down the used protocols into two main ones: [MQTT][mqtt] and [HTTP][http].
+
+MQTT is a lightweight publish-subscribe messaging protocol for Internet of Things applications. Being one of the project's required protocols, it is responsible for publishing the temperature data of a sensor node to a defined topic on a public broker, as well as subscribing to said topic in the ingestion service to enable data reception. While MQTT is described as it's own protocol, it is worth mentioning that a MQTT client must establish a [TCP][tcp] connection to the broker to send or receive messages.
+
+HTTP is a fundamental client-server protocol for data exchange on the Web, used to for example fetch resources such as HTML documents. In this project, it is used to serve [JSON][json]-encoded objects of the previously measured temperatures to the frontend through API endpoints. It is also used to publish events to the frontend using Server-Sent Events when new measurements are processed.
+
+### 2.2 Technologies used
 Since the project consists of multiple components, a mix of technologies have been used.
 
 Keywords: 
@@ -41,7 +48,7 @@ The sensor service uses Spring schedule the temperature polling.
 Spring also provides configurable interfaces for integrating with MQTT that can be shared in case of further expansion of the collected sensor data. 
 
 
-The ingestion service uses Springs [MQTT][mqtt] integration to listen to messages to consume and store in the database. The Spring Data JPA integration is used to communicate with the database. 
+The ingestion service uses Spring's [MQTT][mqtt] integration to listen to messages to consume and store in the database. The Spring Data JPA integration is used to communicate with the database. 
 It also uses [Liquibase][liquibase] to evolve the data schema in the [H2 database][h2-sql]. It furthermore uses Spring Web for hosting the frontend and an HTTP based API for the frontend to interface with. 
 
 The visualization service is a [React][react] app written in [TypeScript][typescript], using [Tailwind CSS][tailwind-css] to style it. We make use of [Recharts][recharts] for the graph visualization. The visualization service is bundled together with the ingestion service, using [Vite][vite] as the build tool. 
@@ -127,10 +134,14 @@ Each thursday, we used the available classroom hours to meet in person and work 
 
 TODO: add links to technologies
 
+[mqtt]: https://
+[tcp]: https://
+[http]: https://
+[json]: https://
+
 [gradle]: https://
 [java-17]: https://
 [spring-boot]: https://
-[mqtt]: https://
 [h2-sql]: https://
 [liquibase]: https://
 [pnpm]: https://

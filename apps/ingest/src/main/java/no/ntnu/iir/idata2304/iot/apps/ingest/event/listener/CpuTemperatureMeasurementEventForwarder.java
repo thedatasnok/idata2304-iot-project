@@ -42,7 +42,7 @@ public class CpuTemperatureMeasurementEventForwarder {
   /**
    * Adds an emitter to the list of emitters to forward creation events to.
    * 
-   * @param emitter the emitter ot add to the list
+   * @param emitter the emitter to add to the list
    */
   public void addEmitter(SseEmitter emitter) {
     emitter.onError(err -> {

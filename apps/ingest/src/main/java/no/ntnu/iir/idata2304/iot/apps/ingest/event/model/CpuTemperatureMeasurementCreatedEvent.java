@@ -10,7 +10,7 @@ public class CpuTemperatureMeasurementCreatedEvent {
   private CpuTemperatureMeasurementProjection measurement;
 
   public CpuTemperatureMeasurementCreatedEvent(CpuTemperatureMeasurement measurement) {
-    // we convert to the projection because this information is be converted to JSON.
+    // we convert to the projection because this information is converted to JSON.
     // converting to JSON may cause stack overflow errors in the future if we make bidirectional
     // mappings of the relationships.
     this.measurement = new CpuTemperatureMeasurementProjection(

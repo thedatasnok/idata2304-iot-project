@@ -16,6 +16,9 @@ import no.ntnu.iir.idata2304.iot.apps.ingest.model.Sensor;
 import no.ntnu.iir.idata2304.iot.apps.ingest.repository.CpuTemperatureMeasurementRepository;
 import no.ntnu.iir.idata2304.iot.apps.ingest.repository.SensorRepository;
 
+/**
+ * 
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,6 +34,11 @@ public class CpuTemperatureMeasurementHandler implements MessageHandler {
   private static final int ROOM_ID_SEGMENT = 2;
   private static final int SENSOR_ID_SEGMENT = 5;
 
+  /**
+   * Handles the incoming message and gets the MQTT topic from the message.
+   * If the message has a topic, the message will be proceed.
+   * If the message does not contain a topic, the message will be ignored.
+   */
   @Override
   public void handleMessage(Message<?> message) throws MessagingException {
     String messageTopic = (String) message.getHeaders().get(MQTT_TOPIC_HEADER);

@@ -12,6 +12,9 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 
+/**
+ * Configurtation class for configuring the MQTT client factory with the configured properties.
+ */
 @Configuration
 @Profile("default")
 public class MqttConfig {
@@ -50,6 +53,11 @@ public class MqttConfig {
     return adapter;
   }
 
+   /**
+    * Builds the mqtt server uri from the configured properties.
+    *
+    * @return Mqtt server uri from the configured properties
+    */
   private String buildMqttServerUri() {
     return String.format("tcp://%s:%d", this.ipAddress.getHostAddress(), this.port);
   }

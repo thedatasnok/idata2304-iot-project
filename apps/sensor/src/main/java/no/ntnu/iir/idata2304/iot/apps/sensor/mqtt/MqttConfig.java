@@ -12,6 +12,9 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageHandler;
 
+/**
+ * Configurtation class for configuring the MQTT client factory with the configured properties.
+ */
 @Configuration
 public class MqttConfig {
 
@@ -51,10 +54,20 @@ public class MqttConfig {
     return messageHandler;
   }
 
+  /**
+   * Builds the MQTT server URI from the configured properties.
+   * 
+   * @return MQTT server URI from the configured properties
+   */
   private String buildMqttServerUri() {
     return String.format("tcp://%s:%d", this.brokerAddress.getHostAddress(), this.brokerPort);
   }
 
+  /**
+   * Builds the MQTT topic from the configured properties.
+   * 
+   * @return MQTT topic from the configured properties
+   */
   private String buildMqttTopic() {
     return String.format("g9hood/%s/%s/cpu/group09/%d", this.placeId, this.roomId, this.sensorId);
   }

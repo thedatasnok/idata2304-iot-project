@@ -11,12 +11,18 @@ import lombok.RequiredArgsConstructor;
 import no.ntnu.iir.idata2304.iot.apps.ingest.projection.SensorListProjection;
 import no.ntnu.iir.idata2304.iot.apps.ingest.repository.SensorRepository;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/sensors")
 public class SensorController {
   private final SensorRepository sensorRepository;
 
+  /**
+   * GET endpoint for finding all stored sensors.
+   *
+   * @return a list of all found sensors
+   */
   @GetMapping
   public ResponseEntity<List<SensorListProjection>> findAll() {
     return ResponseEntity.ok(this.sensorRepository.findAll());

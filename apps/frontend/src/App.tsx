@@ -37,6 +37,7 @@ const App = () => {
   const [measurements, setMeasurements] =
     useState<CpuTemperatureMeasurementData>({});
   const [sensors, setSensors] = useState<SensorListDetails[]>([]);
+  const [domainMin, setDomainMin] = useState<number>(); // to keep track of the start of the x axis
 
   const TICK_INTERVAL_SECONDS = 5;
   const MINUTES_TO_SHOW = 2;
@@ -54,16 +55,25 @@ const App = () => {
 
       const key = convertSensorDataToKey(newMeasurement);
 
-      setMeasurements((old) => ({
-        ...old,
-        [key]: [
-          ...old[key].slice(
-            old[key].length > SLICE_INDEX ? 1 : 0,
-            old[key].length
-          ),
-          newMeasurement,
-        ],
-      }));
+      setMeasurements((old) => {
+        const newMeasurements = {
+          ...old,
+          [key]: [
+            ...old[key].slice(
+              old[key].length > SLICE_INDEX ? 1 : 0,
+              old[key].length
+            ),
+            newMeasurement,
+          ],
+        };
+
+        // set the domain min to the oldest measurement
+        // in the current view. since the latest updated measurement is the 
+        // latest source of truth - we can use it to determine where the domain starts
+        setDomainMin(newMeasurements[key][0].measuredAt);
+
+        return newMeasurements;
+      });
 
       return () => eventSource.close();
     };
@@ -178,7 +188,7 @@ const App = () => {
               <XAxis
                 type='number'
                 dataKey='measuredAt'
-                domain={['dataMin', 'dataMax']}
+                domain={[domainMin ?? 'dataMin', 'dataMax']}
                 scale='time'
                 interval='preserveEnd'
                 tickCount={(MINUTES_TO_SHOW * 60) / TICK_INTERVAL_SECONDS}

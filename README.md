@@ -36,6 +36,10 @@ Client-side web applications can be built in numerous ways. Our application is b
 
 HTTP also has support persistent connections. These persistent connections may be used for event-like data transfer, using a technique called server-sent events. The technique is similar to MQTT, where subscribing clients open connections to a HTTP server and receive events in a way determined by the HTTP server. In browsers, there is an API named EventSource that can help interacting with these server-sent events. 
 
+There are a lot of ways to build applications, but we have decided to use Spring Boot. Spring Boot has a set of starters and integrations that provide a lot of functionality. Examples include a web server and client, database integration using JDBC, MQTT client integration and cron based scheduling support. In addition, they have support for bundling the application as a native binary using GraalVM. 
+
+In order to have the ability to reliably access historical data, across different runs of the application, they have to be saved in a persistent manner. Relational databases is one of many ways to save data to a persistent store. These databases typically use SQL, short for Structured Query language, for data definition and manipulation ([Wikipedia 2022][wikipedia-sql]). We use H2 as our database of choice, and utilize the Spring Boot JPA integration to interact with it. To evolve the database schema, we use Liquibase, which is a tool to migrate the database schema to a desired state.  
+
 
 <a href="#introduction">
   <p align="right">
@@ -164,6 +168,7 @@ The sensor node is meant to run in the background unattended, but in case of err
 [wikipedia-query-strings]: https://en.wikipedia.org/wiki/Query_string
 [mdn-http-post]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 [mdn-javascript]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[wikipedia-sql]: https://en.wikipedia.org/wiki/SQL
 
 TODO: add links to technologies
 

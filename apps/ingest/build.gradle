@@ -2,6 +2,7 @@ plugins {
   alias libs.plugins.spring.boot
   alias libs.plugins.spring.dependencies
   id 'no.ntnu.iir.idata2304.iot.java-application-conventions'
+  alias libs.plugins.graalvm.native
 }
 
 dependencies {
@@ -14,6 +15,7 @@ dependencies {
 
   implementation libs.liquibase 
   implementation libs.sql.h2
+  implementation libs.sql.postgres
 
   compileOnly libs.lombok
 
@@ -32,8 +34,19 @@ task copyFrontend(type: Copy) {
 
 copyFrontend.dependsOn(":apps:frontend:buildProduction")
 bootJar.dependsOn(copyFrontend)
-bootJarMainClassName.dependsOn(copyFrontend)
+nativeCompile.dependsOn(copyFrontend)
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+graalvmNative {
+  binaries {
+    main {
+      buildArgs.add('-H:IncludeResourceBundles=org.eclipse.paho.client.mqttv3.internal.nls.logcat,org.eclipse.paho.client.mqttv3.internal.nls.messages')
+      buildArgs.add('-H:ReflectionConfigurationResources=reflection-config.json')
+      buildArgs.add('-H:ResourceConfigurationResources=resource-config.json')
+      buildArgs.add('-H:+ReportExceptionStackTraces')
+    }
+  }
 }

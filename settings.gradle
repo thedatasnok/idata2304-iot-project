@@ -51,6 +51,7 @@ dependencyResolutionManagement {
       bundle('mqtt', ['spring-integration-mqtt', 'paho-mqttv3'])
 
       library('sql-h2', 'com.h2database', 'h2').withoutVersion() // without version - should be resolved by spring plugin
+      library('sql-postgres', 'org.postgresql', 'postgresql').withoutVersion()
       library('liquibase', 'org.liquibase', 'liquibase-core').versionRef('liquibase')
 
       library('lombok', 'org.projectlombok', 'lombok').versionRef('lombok')

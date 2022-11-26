@@ -24,6 +24,9 @@ public class CpuTemperatureMeasurementController {
   private final CpuTemperatureMeasurementRepository cpuTempRepository;
   private final CpuTemperatureMeasurementEventForwarder measurementForwarder;
   
+  // not sure what the effect of a long timeout is, but 30 seconds is too little
+  private static final Long SSE_TIMEOUT = 1000L * 60 * 60; // 1 hour
+  
   /**
    * GET endpoint for finding all CPU temperature measurements after a given date.
    * 
@@ -45,7 +48,7 @@ public class CpuTemperatureMeasurementController {
    */
   @GetMapping("/events")
   public SseEmitter subscribe() {
-    var emitter = new SseEmitter();
+    var emitter = new SseEmitter(SSE_TIMEOUT);
 
     this.measurementForwarder.addEmitter(emitter);
 

@@ -28,11 +28,12 @@ dependencyResolutionManagement {
       version('spring-boot', springBootVersion)
       version('lombok', '1.18.24')
       version('paho-mqttv3', '1.2.5')
-      version('liquibase', '4.16.1')
+      version('liquibase', '4.17.2')
 
       // plugins
       plugin('spring-boot', 'org.springframework.boot').versionRef('spring-boot')
       plugin('spring-dependencies', 'io.spring.dependency-management').version('1.0.14.RELEASE')
+      plugin('graalvm-native', 'org.graalvm.buildtools.native').version('0.9.18')
 
       // spring boot starters
       library('spring-starter', 'org.springframework.boot', 'spring-boot-starter').versionRef('spring-boot')

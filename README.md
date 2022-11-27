@@ -116,6 +116,16 @@ For instance, on a debian based system, it can be installed running: `apt instal
     
     `MQTT_CLIENT_ID` the unique client id for this application
     
+    
+    Optionally set the following to be notified in a Discord channel when a measurement exceeds the threshold:
+
+    `NOTIFIER_ENABLED` set to `true` to enable the notifier
+
+    `NOTIFIER_DISCORD_WEBHOOK_URL` the Discord webhook URL to use for sending messages
+
+    `NOTIFIER_CPU_TEMPERATURE_THRESHOLD` the threshold for the CPU temperature in degrees celsius
+
+    
 
 3. Run the application `java -jar ingest-1.0.0.jar`
 

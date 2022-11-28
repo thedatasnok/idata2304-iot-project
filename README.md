@@ -252,11 +252,11 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 
 
 ## References
-- Wikipedia. *MQTT*. 24th of November 2022. [link][wikipedia-mqtt]
-- Mozilla MDN. *HTTP*. 24th of November 2022. [link][mdn-http]
-- Wikipedia. *Query string*. 24th of November 2022. [link][wikipedia-query-strings]
-- Mozilla MDN. *POST - HTTP*. 24th of November 2022. [link][mdn-http-post]
-- Mozilla MDN. *JavaScript*. 24th of November 2022. [link][mdn-javascript]
+- Wikipedia. *MQTT*. Accessed 24th of November 2022. [link][wikipedia-mqtt]
+- Mozilla MDN. *HTTP*. Accessed 24th of November 2022. [link][mdn-http]
+- Wikipedia. *Query string*. Accessed 24th of November 2022. [link][wikipedia-query-strings]
+- Mozilla MDN. *POST - HTTP*. Accessed 24th of November 2022. [link][mdn-http-post]
+- Mozilla MDN. *JavaScript*. Accessed 24th of November 2022. [link][mdn-javascript]
 
 [wikipedia-mqtt]: https://en.wikipedia.org/wiki/MQTT
 [mdn-http]: https://developer.mozilla.org/en-US/docs/Web/HTTP

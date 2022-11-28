@@ -138,11 +138,15 @@ During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
 
 1. Log in as or elevate your shell to the root user.
 
-    `sudo su`
+    ```sh
+    sudo su
+    ```
 
 2. Run the following to invoke the install script: 
 
-    `bash <(curl -s https://raw.githubusercontent.com/thedatasnok/idata2304-iot-project/main/tools/install-sensor.sh)`
+    ```sh
+    bash <(curl -s https://raw.githubusercontent.com/thedatasnok/idata2304-iot-project/main/tools/install-sensor.sh)
+    ```
 
 3. Fill out details about the MQTT connection
 

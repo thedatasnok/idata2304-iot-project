@@ -13,7 +13,7 @@
 <p align="center">This is an educational project in the course IDATA2304 Computer Networks at NTNU.</p>
 
 ## Abstract
-There is a growth of technological applications being connected to the internet. These applications are member of numerous industries, that may require the appliances responsible for said applications to run under challenging environmental circumstances. Information screens and fuel price signs are two examples of where such appliances are used. To ensure longevity of the appliances installed used to run said applications, we need to be aware of their working conditions, and be warned if these conditions worsen to a state that could be of potential harm to either the appliance itself or introduce hazards to personnel utilizing the technology. In this project, we have created a prototype system monitoring system health for appliances. The system measures the CPU temperature of devices, and is capable of showing a real-time graph with updates as measurements are processed. It also offers an optional Discord integration for notifying by message if a sensor measures a temperature exceeding a threshold. The system can be further expanded upon in order to support different kinds of measurements, such as the amount of processing power being used or environmental conditions to help describing the working conditions further. 
+There is a growth of technological applications being connected to the internet. These applications are members of numerous industries, that may require the appliances responsible for said applications to run under challenging environmental circumstances. Information screens and fuel price signs are two examples of where such appliances are used. To ensure longevity of the appliances installed used to run said applications, we need to be aware of their working conditions, and be warned if these conditions worsen to a state that could be of potential harm to either the appliance itself or introduce hazards to personnel utilizing the technology. In this project, we have created a prototype system monitoring system health for appliances. The system measures the CPU temperature of devices, and is capable of showing a real-time graph with updates as measurements are processed. It also offers an optional Discord integration for notifying by message if a sensor measures a temperature exceeding a threshold. The system can be further expanded upon in order to support different kinds of measurements, such as the amount of processing power being used or environmental conditions to help describing the working conditions further. 
 
 
 ## 1 Introduction
@@ -26,7 +26,7 @@ A range of protocols are applied in this project, with the two main building blo
 
 MQTT is a lightweight publish-subscribe messaging protocol for Internet of Things applications ([Wikipedia 2022][wikipedia-mqtt]). MQTT is an abbreviation for the previously called Message Queuing Telemetry Transport. Being one of the project's required protocols, it is responsible for publishing the temperature data of a sensor node to a defined topic on a broker, as well as subscribing to said topic in order to enable data reception. MQTT is an application layer protocol that utilizes a TCP connection to a broker to send or receive messages. 
 
-HTTP, short for Hypertext Transfer Protocol, is a fundamental client-server protocol for data exchange on the Web. It can be used to, for instance, fetch resources such as HTML documents. HTTP is also, like MQTT, an application layer protocol making use of a TCP connections to exchange data. The HTTP protocol specifies a set of verbs, or methods, that help differentiate the purpose of a request. In this project, we take advantage of two of these methods: GET and POST. GET requests typically indicate that the requesting client wants to fetch a resource from a HTTP server. POST requests, on the other hand, typically indicates that the client wants to upload a new entity to a resource ([MDN 2022][mdn-http]). 
+HTTP, short for Hypertext Transfer Protocol, is a fundamental client-server protocol for data exchange on the Web. It can be used to, for instance, fetch resources such as HTML documents. HTTP is also, like MQTT, an application layer protocol making use of a TCP connection to exchange data. The HTTP protocol specifies a set of verbs, or methods, that help differentiate the purpose of a request. In this project, we take advantage of two of these methods: GET and POST. GET requests typically indicate that the requesting client wants to fetch a resource from a HTTP server. POST requests, on the other hand, typically indicates that the client wants to upload a new entity to a resource ([MDN 2022][mdn-http]). 
 
 In cases where extra metadata is useful to narrow or guide the HTTP server as to what the client is looking for, query parameters can be used. Query parameters are key-value pairs of strings encoded as query strings in the HTTP requests URL. These parameters are appended at the end of the request URL. In this project, these parameters are used to give the server a parameter that we can use to limit the response to what is beneficial to the user ([Wikipedia 2022][wikipedia-query-strings]). 
 
@@ -34,7 +34,7 @@ Data being uploaded to a HTTP server is typically encoded using a predetermined 
 
 Client-side web applications can be built in numerous ways. Our application is built with TypeScript, another programming language built on top of JavaScript. To represent our user interface in a declarative manner, we use React as a framework. The source code is a mix of TypeScript and HTML markup (tsx), grouped into reusable bits where applicable. TypeScript code in React can be compiled to JavaScript equivalents and furthermore bundled as HTML and JavaScript files that can be served on a HTTP server. The client-side application makes use of the Fetch Browser API to fetch JSON data from the ingestion service. Since JSON objects are how objects are represented in JavaScript, we do not have to serialize our responses in the client application.
 
-HTTP also has support persistent connections. These persistent connections may be used for event-like data transfer, using a technique called server-sent events. The technique is similar to MQTT, where subscribing clients open connections to a HTTP server and receive events in a way determined by the HTTP server. In browsers, there is an API named EventSource that can help interacting with these server-sent events. 
+HTTP also supports persistent connections. Such connections may be used for event-like data transfer, using a technique called server-sent events. The technique is similar to MQTT, where subscribing clients open connections to a HTTP server and receive events in a way determined by the HTTP server. In browsers, there is an API named EventSource that can help interacting with these server-sent events. 
 
 There are a lot of ways to build applications, but we have decided to use Spring Boot. Spring Boot has a set of starters and integrations that provide a lot of functionality. Examples include a web server and client, database integration using JDBC, MQTT client integration and cron based scheduling support. In addition, they have support for bundling the application as a native binary using GraalVM. 
 
@@ -126,7 +126,7 @@ The visualization service is also included in the native binaries. The React app
 
 ### 4.3 Installation & Usage
 In order to set up or install the software you will need the following: 
-- An ARM64 sensor node runnning a debian based operating system
+- An ARM64 sensor node running a debian based operating system
 - A computer with Java 17 (LTS) installed
 
 Both devices will need an internet connection.
@@ -206,6 +206,21 @@ The sensor node is meant to run in the background unattended, but in case of err
 
 
 ## Conclusion and future work
+As part of the Autumn 2022 IDATA2304 Computer Networks project, our group developed a prototype of Antiboom - a Raspberry Pi health monitor. It should act as proof of concept for what could ensure longevity of appliances used to run applications under challenging environmental circumstances. In its current state, it is an application consisting of four components in control, namely sensor nodes, an ingestion service, an SQL database and a visualization service. A range of technologies and protocols was used to develop the project, with MQTT and HTTP being the two main building blocks. The development process consisted of 1 week long sprints, starting each tuesday by documenting the previous sprint and planning the next one. Antiboom sensor nodes can currently be installed on ARM64-based computers, and the visualization service - a Web interface - on any computer running Java 17.
+
+Even though the current version of Antiboom fulfills the minimum requirements of the project, it is still a prototype. Some of the ideas initially written down in our [brainstorm document](docs/brainstorm.md), and some we thought of during development, did not make it in due to various reasons; time constraint being the main one. The following is a list of potential future work and possibilities for expansion:
+
+- The application currently utilizes a public MQTT broker. Though the amount of damage to be done through an attack on it during development is arguably low, utilizing a self-hosted broker would be a necessity in a real scenario.
+
+- One of the initial ideas for the Web interface was to display the minimum, average and maximum temperatures over a set period of time. This could be implemented through SQL queries and some statistics work.
+
+- A customizable maximum temperature threshold instead of a fixed one at 85° C.
+
+- More channels for notifications to make the application more universal. Currently implemented through Discord, though ideally to be expanded to E-mail and/or SMS.
+
+- Offline buffering and detection
+
+- ...
 
 
 <br />

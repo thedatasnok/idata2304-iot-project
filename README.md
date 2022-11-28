@@ -72,8 +72,59 @@ The project requires a minimum of two nodes programmed by the students, which is
 - SQL database
 - Visualization service
 
+The below diagram shows how the components are connected to each other. The sensor nodes connect to a MQTT broker, and sends any measurements to that broker. The ingestion service subscribes to the broker and saves measurements to the database. The visualization service communicates with the ingestion service and fetches data from it, which is then displayed to the user. 
 
-### 4.2 Installation & Usage
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.overview.drawio.png" />
+</div>
+
+<br />
+
+
+The sensor nodes are programmed to send measurements to a configured MQTT broker. Metadata about the sensor is configured on installation and encoded in the message topic. The measurement is encoded in the message payload. Each measurement is polled from the sensor nodes CPU temperature readings every 5 seconds and sent to the broker. The scheduling is handled by Springs Scheduling capabilities. 
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.sensor-mqtt.drawio.png" />
+</div>
+
+<br />
+
+Once a measurement is received at the MQTT broker, the MQTT broker forwards the message to any clients listening to topics matching this pattern. In this case, to support multiple sensors, a pattern matcher is used to listen to all topics that match the pattern `g9hood/+/+/cpu/group09/+`. The ingestion service subscribes to the broker using this pattern, and receives all messages sent to the broker using that pattern as their topic. 
+
+As messages are received at in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both these objects are then saved to a database. The Spring Boot JPA integration used to communicate with the database.
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.ingest-mqtt.drawio.png" />
+</div>
+
+<br />
+
+As the ingestion service saves measurements to the database, it reads out the inserted row from the database including generated fields such as the primary key and creation date. It uses the read information to produce an event internally in the application allowing further notifying any recipients of the event. This is accomplished using Springs event system. 
+
+There are two event listeners in the ingestion service that listen to this event. One of them is an event forwarder, it forwards any of the stored measurements to clients using the visualization service through Server-sent events. Any of the visualization clients that are listening to the events using an EventSource, will receive the newly processed measurement and can add it to the visualization. 
+
+In addition to forwarding the events, there is another listener that represents a notifier. The notifier is optionally configured by the administrator of the service, and can send messages to a configured Discord channel. The notifier determines whether the saved measurement exceeds a configured threshold. If it exceeds, it sends a POST request to the configured webhook using Springs RestTemplate functionality, which results in a message being sent in the channel.
+
+The visualization service is not only capable of receiving new updates, it also reads recent historical measurements from the ingestion service. The visualization uses the web browser Fetch API to send HTTP requests to the ingestion service. The ingestion service employs the Spring Boot Web integration to implement HTTP endpoints that reads from the database and encodes objects as JSON before responding to the clients request. This mechanism is used to fetch initial data for the graph and metadata for sensors. The measurement data fetched is narrowed using a query parameter, which defines the time of when measurements should be measured after. The narrowing prevents the graph from extending too far into the past, and only shows the most recent measurements. 
+
+In order to update the graph and sensor details displayed on the web page, the state functionality in React is used. As the visualization service receives or reads measurements and sensor metadata, it updates the state of the application. The change of state causes React to re-render the page, resulting in the graph and sensor details updating. 
+
+
+### 4.2 Bundling
+
+Both the ingestion and sensor applications are capable of being bundled using GraalVM. Which means they can be run as native binaries, without the need for a JVM. This has reduced the amount of resources required to run the applications, as well as reducing the startup time. It also simplifies the installation of the application, as there is no prerequisite for a compatible JVM. As long as the system is a debian based system on a arm64 architecture, the application can be installed using the provided installation script.
+
+The visualization service is also included in the native binaries. The React application buiilt using TypeScript is bundled using Vite. The bundle is then copied inside the ingestion service and served by it. This means that the visualization service is not a separate deployment, but rather a part of the ingestion service. This simplifies the installation, as there is no need to install and run two separate applications.
+
+
+### 4.3 Installation & Usage
 In order to set up or install the software you will need the following: 
 - An ARM64 sensor node runnning a debian based operating system
 - A computer with Java 17 (LTS) installed
@@ -81,7 +132,7 @@ In order to set up or install the software you will need the following:
 Both devices will need an internet connection.
 
 
-#### 4.2.1 Installing sensor nodes
+#### 4.3.1 Installing sensor nodes
 This step requires you to have an ARM64 based computer with running a Debian based operating system. 
 During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
 
@@ -98,7 +149,7 @@ During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
     **Note:** the client ID needs to be unique per client
 
 
-#### 4.2.2 Installing the ingest/visualization node
+#### 4.3.2 Installing the ingest/visualization node
 This step can be run on any computer compatible with Java 17, installing Java is a prerequisite. 
 For instance, on a debian based system, it can be installed running: `apt install openjdk-17-jre-headless`
 
@@ -130,8 +181,8 @@ For instance, on a debian based system, it can be installed running: `apt instal
 3. Run the application `java -jar ingest-1.0.0.jar`
 
 
-#### 4.2.3 Usage
-Once the ingest/visualization node is set up as described in [3.1.2](#312-installing-the-ingestvisualization-node), you can open up the user interface by visiting: http://localhost:8080/ in your browser.
+#### 4.3.3 Usage
+Once the ingest/visualization node is set up as described in [4.3.2](#312-installing-the-ingestvisualization-node), you can open up the user interface by visiting: http://localhost:8080/ in your browser.
 
 
 The sensor node is meant to run in the background unattended, but in case of errors you can control the service using `systemctl`. 
@@ -169,7 +220,7 @@ The sensor node is meant to run in the background unattended, but in case of err
 ## x References
 - Wikipedia. *MQTT*. 24th of November 2022. [link][wikipedia-mqtt]
 - Mozilla MDN. *HTTP*. 24th of November 2022. [link][mdn-http]
-- Wikipedia. *Query string*. 24th of November 2022. [link][wikipedia-query-string]
+- Wikipedia. *Query string*. 24th of November 2022. [link][wikipedia-query-strings]
 - Mozilla MDN. *POST - HTTP*. 24th of November 2022. [link][mdn-http-post]
 - Mozilla MDN. *JavaScript*. 24th of November 2022. [link][mdn-javascript]
 

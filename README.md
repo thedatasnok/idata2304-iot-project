@@ -1,6 +1,6 @@
 <br />
 <div align="center">
-  <a href="#introduction">
+  <a href="#abstract">
     <img src="docs/assets/wordmark.png" width="200">
   </a>
 
@@ -30,7 +30,7 @@ HTTP, short for Hypertext Transfer Protocol, is a fundamental client-server prot
 
 In cases where extra metadata is useful to narrow or guide the HTTP server as to what the client is looking for, query parameters can be used. Query parameters are key-value pairs of strings encoded as query strings in the HTTP requests URL. These parameters are appended at the end of the request URL. In this project, these parameters are used to give the server a parameter that we can use to limit the response to what is beneficial to the user ([Wikipedia 2022][wikipedia-query-strings]). 
 
-Data being uploaded to a HTTP server is typically encoded using a predetermined format in the requests body. The kind of encoding used varies and is defined in the request and response `Content-Type` headers ([MDN 2022][mdn-http-post]). In this project we have decided to utilize JSON encoding. JSON is short for JavaScript Object Notation and the encoding format stems from the representation of objects in the JavaScript programming language. JavaScript is a scripting language originally made for web pages ([MDN 2022][mdn-javascript]). It allows for more dynamic behaviour than what is achievable using plain HTML and CSS. 
+Data being uploaded to or sent from a HTTP server is typically encoded using a predetermined format in the body. The kind of encoding used varies and is defined in the request and response `Content-Type` header ([MDN 2022][mdn-http-post]). In this project we have decided to utilize JSON encoding. JSON is short for JavaScript Object Notation and the encoding format stems from the representation of objects in the JavaScript programming language. JavaScript is a scripting language originally made for web pages ([MDN 2022][mdn-javascript]). It allows for more dynamic behaviour than what is achievable using plain HTML and CSS. 
 
 Client-side web applications can be built in numerous ways. Our application is built with TypeScript, another programming language built on top of JavaScript. To represent our user interface in a declarative manner, we use React as a framework. The source code is a mix of TypeScript and HTML markup (tsx), grouped into reusable bits where applicable. TypeScript code in React can be compiled to JavaScript equivalents and furthermore bundled as HTML and JavaScript files that can be served on a HTTP server. The client-side application makes use of the Fetch Browser API to fetch JSON data from the ingestion service. Since JSON objects are how objects are represented in JavaScript, we do not have to serialize our responses in the client application.
 
@@ -41,7 +41,7 @@ There are a lot of ways to build applications, but we have decided to use Spring
 In order to have the ability to reliably access historical data, across different runs of the application, they have to be saved in a persistent manner. Relational databases is one of many ways to save data to a persistent store. These databases typically use SQL, short for Structured Query language, for data definition and manipulation ([Wikipedia 2022][wikipedia-sql]). We use H2 as our database of choice, and utilize the Spring Boot JPA integration to interact with it. To evolve the database schema, we use Liquibase, which is a tool to migrate the database schema to a desired state.  
 
 
-<a href="#introduction">
+<a href="#abstract">
   <p align="right">
   To top
   </p>
@@ -56,7 +56,7 @@ Starting the week the assignment was handed out, our group used every tuesday to
 Each thursday, we used the available classroom hours to meet in person and work on the project together. We did this to clear up any potential confusion about the assigned work, as well as help each other with mostly, but not only, programming-specific things.
 
 
-<a href="#introduction">
+<a href="#abstract">
   <p align="right">
   To top
   </p>
@@ -96,7 +96,7 @@ The sensor nodes are programmed to send measurements to a configured MQTT broker
 
 Once a measurement is received at the MQTT broker, the MQTT broker forwards the message to any clients listening to topics matching this pattern. In this case, to support multiple sensors, a pattern matcher is used to listen to all topics that match the pattern `g9hood/+/+/cpu/group09/+`. The ingestion service subscribes to the broker using this pattern, and receives all messages sent to the broker using that pattern as their topic. 
 
-As messages are received at in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both these objects are then saved to a database. The Spring Boot JPA integration used to communicate with the database.
+As messages are received at in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both these objects are then saved to a database. The Spring Boot JPA integration used to communicate with the database, which is H2 in this case. The usage of H2 results in a less complex setup, and is stored directly to a file on the system. 
 
 <br />
 
@@ -194,7 +194,7 @@ Once the ingest/visualization node is set up as described in [4.3.2](#312-instal
 The sensor node is meant to run in the background unattended, but in case of errors you can control the service using `systemctl`. 
 
 
-<a href="#introduction">
+<a href="#abstract">
   <p align="right">
   To top
   </p>
@@ -203,8 +203,19 @@ The sensor node is meant to run in the background unattended, but in case of err
 
 ## 5 Discussion
 
+The choice of technologies slots in nicely with a combination of prior experience and possibilities to learn new concepts and technologies. The pairing of SQL for a persistent store of measurement data and Spring Boot lead to a relatively quick development of both the ingestion service and the sensor application. The main portion of the system is built using Java, a language in which most of the team members have experience. 
 
-<a href="#introduction">
+In addition to Spring Boot, we used a combination of React and TypeScript for the visualization service. Most of the team members are new to these technologies, but the projects slim scope resulted in it being a decent fit to be introduced to them. 
+
+In the project, we decided to integrate to a Discord channel for notifications. Discord may not have a strong level of cohesion with the problem domain, but serves as a good example because the knowledge required to integrate with it is minimal. This choice was mainly made to emphasize the possibilities for analyzing the stored measurements, and providing notifications based on a condition that is met. 
+
+In the projects duration, we experienced few deviations from what initially had planned. There were a few times where we were not able to finish all activities planned in a sprint, however most of the sprints were completed as planned. Sometimes we even found time to slot in extra work, outside the initial plan of a sprint. 
+
+
++security considerations
+
+
+<a href="#abstract">
   <p align="right">
   To top
   </p>
@@ -224,14 +235,16 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 
 - More channels for notifications to make the application more universal. Currently implemented through Discord, though ideally to be expanded to E-mail and/or SMS.
 
-- Offline buffering and detection
+- Offline buffering, if a node loses connection to internet - can we store the measurements locally and send them when the connection is restored? 
 
-- ...
+- Offline detection, can the sensor nodes measurements to detect if the node is offline?
+
+- Measuring multiple variables that may help describe the working conditions of a node better, perhaps expand to a dynamic way of configuring measurements
 
 
 <br />
 
-<a href="#introduction">
+<a href="#abstract">
   <p align="right">
   To top
   </p>

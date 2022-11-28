@@ -139,6 +139,19 @@ The sensor node is meant to run in the background unattended, but in case of err
   </p>
 </a>
 
+## 6 Security
+
+Antiboom have been developed around using a ready to use public MQTT broker distributed by the teachers of this project, while this is handy solution for the scope of this project, it still opens up for some security issues. Malicious attacks can target our application by sending messages to the open MQTT broker with the same topic structure, this would lead the ingestion service of the application picking up unwanted messages and creating spam.
+
+There is also the potential of a public MQTT broker being more open to the public, and therfore more open to a dos/ddos attack.
+
+Regarding security when transmitting data with the public MQTT broker and the client. The data transmitted with the public MQTT broker and the sensor nodes is open and not encrypted. While encrypting the data with a shared secret key would be possible, the sensitivity of the data sent from the sensor nodes and the scope of this project makes this a feature not deemed necessary.
+
+<a href="#introduction">
+  <p align="right">
+  To top
+  </p>
+</a>
 
 ## Conclusion and future work
 

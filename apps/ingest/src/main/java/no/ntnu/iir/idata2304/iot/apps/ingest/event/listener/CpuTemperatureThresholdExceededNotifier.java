@@ -1,5 +1,6 @@
 package no.ntnu.iir.idata2304.iot.apps.ingest.event.listener;
 
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public class CpuTemperatureThresholdExceededNotifier {
    * @param event the event to analyze
    */
   @EventListener(classes = CpuTemperatureMeasurementCreatedEvent.class)
+  @RegisterReflectionForBinding(DiscordWebhookMessage.class) // allows for serialization in a native image
   public void onCpuMeasurementCreated(CpuTemperatureMeasurementCreatedEvent event) {
     var measurement = event.getMeasurement();
     if (!this.enabled || measurement.getTemperature() < this.threshold) return;

@@ -4,17 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.RepositoryDefinition;
+import org.springframework.data.repository.Repository;
 
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.Sensor;
 import no.ntnu.iir.idata2304.iot.apps.ingest.model.SensorIdentifier;
 import no.ntnu.iir.idata2304.iot.apps.ingest.projection.SensorListProjection;
 
-@RepositoryDefinition(
-  domainClass = Sensor.class,
-  idClass = SensorIdentifier.class
-)
-public interface SensorRepository {
+/**
+ * Repository for managing sensors in the database.
+ */
+public interface SensorRepository extends Repository<Sensor, SensorIdentifier> {
 
   /**
    * Finds all sensors stored in the database.

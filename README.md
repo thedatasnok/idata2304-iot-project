@@ -121,7 +121,9 @@ In order to update the graph and sensor details displayed on the web page, the s
 
 Both the ingestion and sensor applications are capable of being bundled using GraalVM. Which means they can be run as native binaries, without the need for a JVM. This has reduced the amount of resources required to run the applications, as well as reducing the startup time. It also simplifies the installation of the application, as there is no prerequisite for a compatible JVM. As long as the sensor node is a debian based system on a arm64 architecture, the application can be installed using the provided installation script. As for the ingestion service, we still only provide a JAR file that can be used by a compatible JVM, but it is possible to bundle it as a native binary. 
 
-The visualization service is also included in the native binaries. The React application buiilt using TypeScript is bundled using Vite. The bundle is then copied inside the ingestion service and served by it. This means that the visualization service is not a separate deployment, but rather a part of the ingestion service. This simplifies the installation, as there is no need to install and run two separate applications.
+The visualization service is also included in the native binaries of the ingestion service. The React application built with TypeScript is bundled using Vite. The bundle is then copied inside the ingestion service and served by it. This means that the visualization service is not a separate deployment, but rather a part of the ingestion service. This simplifies the installation, as there is no need to install and run two separate applications. 
+
+Released versions of the system is available on GitHub. In order to release a new version, the process as described [here](docs/releasing.md) can be followed. The release process is built using GitHub Actions, that will bundle the two applications as JAR for the ingest application and native binary for the sensor application. The release process creates a new release on GitHub, and uploads the bundled applications as artifacts. 
 
 
 ### 4.3 Installation & Usage

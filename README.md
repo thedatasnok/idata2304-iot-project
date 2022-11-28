@@ -232,7 +232,7 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 </a>
 
 
-## x References
+## References
 - Wikipedia. *MQTT*. 24th of November 2022. [link][wikipedia-mqtt]
 - Mozilla MDN. *HTTP*. 24th of November 2022. [link][mdn-http]
 - Wikipedia. *Query string*. 24th of November 2022. [link][wikipedia-query-strings]

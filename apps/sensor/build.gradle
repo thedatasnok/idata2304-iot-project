@@ -2,7 +2,7 @@ plugins {
   alias libs.plugins.spring.boot
   alias libs.plugins.spring.dependencies
   id 'no.ntnu.iir.idata2304.iot.java-application-conventions'
-  id 'org.springframework.experimental.aot' version '0.12.1'
+  alias libs.plugins.graalvm.native
 }
 
 dependencies {

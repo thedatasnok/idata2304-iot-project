@@ -10,52 +10,36 @@
     <a href="#3-getting-started"><strong>Get started »</strong></a>
 </div>
 
+<p align="center">This is an educational project in the course IDATA2304 Computer Networks at NTNU.</p>
+
+## Abstract
+There is a growth of technological applications being connected to the internet. These applications are members of numerous industries, that may require the appliances responsible for said applications to run under challenging environmental circumstances. Information screens and fuel price signs are two examples of where such appliances are used. To ensure longevity of the appliances installed used to run said applications, we need to be aware of their working conditions, and be warned if these conditions worsen to a state that could be of potential harm to either the appliance itself or introduce hazards to personnel utilizing the technology. In this project, we have created a prototype system monitoring system health for appliances. The system measures the CPU temperature of devices, and is capable of showing a real-time graph with updates as measurements are processed. It also offers an optional Discord integration for notifying by message if a sensor measures a temperature exceeding a threshold. The system can be further expanded upon in order to support different kinds of measurements, such as the amount of processing power being used or environmental conditions to help describing the working conditions further. 
+
+
 ## 1 Introduction
 
 Antiboom is our solution to the Autumn 2022 IDATA2304 Computer Networks project which involves building a prototype of a meaningful IoT application. The application is a Raspberry Pi health monitor which periodically logs processor temperature(s) and displays them in a user-friendly fashion on a web interface. The main idea stems from the potential problem that arises when IoT devices are placed in hot environments, such as inside fuel price signs at gas stations, where the temperatures may exceed what's considered safe for the device. The idea of antiboom is to prevent any potential device damage by providing a real-time graph of temperatures within a set time period, which also helps discover any flaws with the device, such as broken fans or heat sinks.
 
-## 2 Architecture
-The project requires a minimum of two nodes programmed by the students, which is achieved and further abstracted into a total of four components in control:
-- Sensor nodes
-- Ingestion service
-- SQL database
-- Visualization service
+## 2 Technologies
 
-You can read more about the architecture [here](docs/architecture.md).
+A range of protocols are applied in this project, with the two main building blocks being MQTT and HTTP.
 
-### 2.1 Protocols used
-We can narrow down the used protocols into two main ones: [MQTT][mqtt] and [HTTP][http].
+MQTT is a lightweight publish-subscribe messaging protocol for Internet of Things applications ([Wikipedia 2022][wikipedia-mqtt]). MQTT is an abbreviation for the previously called Message Queuing Telemetry Transport. Being one of the project's required protocols, it is responsible for publishing the temperature data of a sensor node to a defined topic on a broker, as well as subscribing to said topic in order to enable data reception. MQTT is an application layer protocol that utilizes a TCP connection to a broker to send or receive messages. 
 
-MQTT is a lightweight publish-subscribe messaging protocol for Internet of Things applications. Being one of the project's required protocols, it is responsible for publishing the temperature data of a sensor node to a defined topic on a public broker, as well as subscribing to said topic in the ingestion service to enable data reception. While MQTT is described as it's own protocol, it is worth mentioning that a MQTT client must establish a [TCP][tcp] connection to the broker to send or receive messages.
+HTTP, short for Hypertext Transfer Protocol, is a fundamental client-server protocol for data exchange on the Web. It can be used to, for instance, fetch resources such as HTML documents. HTTP is also, like MQTT, an application layer protocol making use of a TCP connection to exchange data. The HTTP protocol specifies a set of verbs, or methods, that help differentiate the purpose of a request. In this project, we take advantage of two of these methods: GET and POST. GET requests typically indicate that the requesting client wants to fetch a resource from a HTTP server. POST requests, on the other hand, typically indicates that the client wants to upload a new entity to a resource ([MDN 2022][mdn-http]). 
 
-HTTP is a fundamental client-server protocol for data exchange on the Web, used to for example fetch resources such as HTML documents. In this project, it is used to serve [JSON][json]-encoded objects of the previously measured temperatures to the frontend through API endpoints. It is also used to publish events to the frontend using Server-Sent Events when new measurements are processed.
+In cases where extra metadata is useful to narrow or guide the HTTP server as to what the client is looking for, query parameters can be used. Query parameters are key-value pairs of strings encoded as query strings in the HTTP requests URL. These parameters are appended at the end of the request URL. In this project, these parameters are used to give the server a parameter that we can use to limit the response to what is beneficial to the user ([Wikipedia 2022][wikipedia-query-strings]). 
 
-### 2.2 Technologies used
-Since the project consists of multiple components, a mix of technologies have been used.
+Data being uploaded to a HTTP server is typically encoded using a predetermined format in the requests body. The kind of encoding used varies and is defined in the request and response `Content-Type` headers ([MDN 2022][mdn-http-post]). In this project we have decided to utilize JSON encoding. JSON is short for JavaScript Object Notation and the encoding format stems from the representation of objects in the JavaScript programming language. JavaScript is a scripting language originally made for web pages ([MDN 2022][mdn-javascript]). It allows for more dynamic behaviour than what is achievable using plain HTML and CSS. 
 
-Keywords: 
-[Gradle][gradle], [Java 17][java-17], [Spring Boot][spring-boot], [MQTT][mqtt],
-[H2 SQL][h2-sql], [Liquibase][liquibase], [PNPM][pnpm], [TypeScript][typescript], 
-[React][react], [Vite][vite], [Tailwind][tailwind-css], [Recharts][recharts]
+Client-side web applications can be built in numerous ways. Our application is built with TypeScript, another programming language built on top of JavaScript. To represent our user interface in a declarative manner, we use React as a framework. The source code is a mix of TypeScript and HTML markup (tsx), grouped into reusable bits where applicable. TypeScript code in React can be compiled to JavaScript equivalents and furthermore bundled as HTML and JavaScript files that can be served on a HTTP server. The client-side application makes use of the Fetch Browser API to fetch JSON data from the ingestion service. Since JSON objects are how objects are represented in JavaScript, we do not have to serialize our responses in the client application.
 
-The project is structured in a [Gradle][gradle] based monorepository. While not applied here, it allows for defining shared modules across applications among other nice to haves. API contracts or MQTT messages are nice candidates for this.
+HTTP also supports persistent connections. Such connections may be used for event-like data transfer, using a technique called server-sent events. The technique is similar to MQTT, where subscribing clients open connections to a HTTP server and receive events in a way determined by the HTTP server. In browsers, there is an API named EventSource that can help interacting with these server-sent events. 
 
+There are a lot of ways to build applications, but we have decided to use Spring Boot. Spring Boot has a set of starters and integrations that provide a lot of functionality. Examples include a web server and client, database integration using JDBC, MQTT client integration and cron based scheduling support. In addition, they have support for bundling the application as a native binary using GraalVM. 
 
-The sensor and ingestion services are [Java 17][java-17] applications built using the [Spring Boot][spring-boot] framework.
+In order to have the ability to reliably access historical data, across different runs of the application, they have to be saved in a persistent manner. Relational databases is one of many ways to save data to a persistent store. These databases typically use SQL, short for Structured Query language, for data definition and manipulation ([Wikipedia 2022][wikipedia-sql]). We use H2 as our database of choice, and utilize the Spring Boot JPA integration to interact with it. To evolve the database schema, we use Liquibase, which is a tool to migrate the database schema to a desired state.  
 
-
-The sensor service uses Spring schedule the temperature polling. 
-Spring also provides configurable interfaces for integrating with MQTT that can be shared in case of further expansion of the collected sensor data. 
-
-
-The ingestion service uses Spring's [MQTT][mqtt] integration to listen to messages to consume and store in the database. The Spring Data JPA integration is used to communicate with the database. 
-It also uses [Liquibase][liquibase] to evolve the data schema in the [H2 database][h2-sql]. It furthermore uses Spring Web for hosting the frontend and an HTTP based API for the frontend to interface with. 
-
-The visualization service is a [React][react] app written in [TypeScript][typescript], using [Tailwind CSS][tailwind-css] to style it. We make use of [Recharts][recharts] for the graph visualization. The visualization service is bundled together with the ingestion service, using [Vite][vite] as the build tool. 
-
-<br />
-
-You can read more about the technologies we used and why [here](docs/technologies.md).
 
 <a href="#introduction">
   <p align="right">
@@ -63,30 +47,113 @@ You can read more about the technologies we used and why [here](docs/technologie
   </p>
 </a>
 
-## 3 Getting started
 
-### 3.1 Setup
+## 3 Methodology
+Antiboom has been developed in 1 week long sprints, with each of the sprints documented [here](docs/sprints/index.md). This was done both to fullfill one of the project requirements (use of agile work methodology), but also because we have had positive former experiences with this type of workflow and believed it would work just as well for this assignment.
+
+Starting the week the assignment was handed out, our group used every tuesday to finalize a sprint and start a new one. This included discussing and writing a short report about the sprint, as well as planning, defining and assigning tasks as issues on our [GitHub issue board](https://github.com/users/thedatasnok/projects/2/). This usually went by smoothly as we had no problems distributing the issues according to our interests while keeping the workload mostly fair.
+
+Each thursday, we used the available classroom hours to meet in person and work on the project together. We did this to clear up any potential confusion about the assigned work, as well as help each other with mostly, but not only, programming-specific things.
+
+
+<a href="#introduction">
+  <p align="right">
+  To top
+  </p>
+</a>
+
+
+## 4 Results
+
+### 4.1 Architecture
+The project requires a minimum of two nodes programmed by the students, which is achieved and further abstracted into a total of four components in control:
+- Sensor nodes
+- Ingestion service
+- SQL database
+- Visualization service
+
+The below diagram shows how the components are connected to each other. The sensor nodes connect to a MQTT broker, and sends any measurements to that broker. The ingestion service subscribes to the broker and saves measurements to the database. The visualization service communicates with the ingestion service and fetches data from it, which is then displayed to the user. 
+
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.overview.drawio.png" />
+</div>
+
+<br />
+
+
+The sensor nodes are programmed to send measurements to a configured MQTT broker. Metadata about the sensor is configured on installation and encoded in the message topic. The measurement is encoded in the message payload. Each measurement is polled from the sensor nodes CPU temperature readings every 5 seconds and sent to the broker. The scheduling is handled by Springs Scheduling capabilities. 
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.sensor-mqtt.drawio.png" />
+</div>
+
+<br />
+
+Once a measurement is received at the MQTT broker, the MQTT broker forwards the message to any clients listening to topics matching this pattern. In this case, to support multiple sensors, a pattern matcher is used to listen to all topics that match the pattern `g9hood/+/+/cpu/group09/+`. The ingestion service subscribes to the broker using this pattern, and receives all messages sent to the broker using that pattern as their topic. 
+
+As messages are received at in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both these objects are then saved to a database. The Spring Boot JPA integration used to communicate with the database.
+
+<br />
+
+<div align="center">
+  <img src="docs/diagrams/architecture.v2.ingest-mqtt.drawio.png" />
+</div>
+
+<br />
+
+As the ingestion service saves measurements to the database, it reads out the inserted row from the database including generated fields such as the primary key and creation date. It uses the read information to produce an event internally in the application allowing further notifying any recipients of the event. This is accomplished using Springs event system. 
+
+There are two event listeners in the ingestion service that listen to this event. One of them is an event forwarder, it forwards any of the stored measurements to clients using the visualization service through Server-sent events. Any of the visualization clients that are listening to the events using an EventSource, will receive the newly processed measurement and can add it to the visualization. 
+
+In addition to forwarding the events, there is another listener that represents a notifier. The notifier is optionally configured by the administrator of the service, and can send messages to a configured Discord channel. The notifier determines whether the saved measurement exceeds a configured threshold. If it exceeds, it sends a POST request to the configured webhook using Springs RestTemplate functionality, which results in a message being sent in the channel.
+
+The visualization service is not only capable of receiving new updates, it also reads recent historical measurements from the ingestion service. The visualization uses the web browser Fetch API to send HTTP requests to the ingestion service. The ingestion service employs the Spring Boot Web integration to implement HTTP endpoints that reads from the database and encodes objects as JSON before responding to the clients request. This mechanism is used to fetch initial data for the graph and metadata for sensors. The measurement data fetched is narrowed using a query parameter, which defines the time of when measurements should be measured after. The narrowing prevents the graph from extending too far into the past, and only shows the most recent measurements. 
+
+In order to update the graph and sensor details displayed on the web page, the state functionality in React is used. As the visualization service receives or reads measurements and sensor metadata, it updates the state of the application. The change of state causes React to re-render the page, resulting in the graph and sensor details updating. 
+
+
+### 4.2 Bundling
+
+Both the ingestion and sensor applications are capable of being bundled using GraalVM. Which means they can be run as native binaries, without the need for a JVM. This has reduced the amount of resources required to run the applications, as well as reducing the startup time. It also simplifies the installation of the application, as there is no prerequisite for a compatible JVM. As long as the sensor node is a debian based system on a arm64 architecture, the application can be installed using the provided installation script. As for the ingestion service, we still only provide a JAR file that can be used by a compatible JVM, but it is possible to bundle it as a native binary. 
+
+The visualization service is also included in the native binaries. The React application buiilt using TypeScript is bundled using Vite. The bundle is then copied inside the ingestion service and served by it. This means that the visualization service is not a separate deployment, but rather a part of the ingestion service. This simplifies the installation, as there is no need to install and run two separate applications.
+
+
+### 4.3 Installation & Usage
 In order to set up or install the software you will need the following: 
-- An ARM64 sensor node runnning a debian based operating system
+- An ARM64 sensor node running a debian based operating system
 - A computer with Java 17 (LTS) installed
 
-### 3.1.1 Installing sensor nodes
+Both devices will need an internet connection.
+
+
+#### 4.3.1 Installing sensor nodes
 This step requires you to have an ARM64 based computer with running a Debian based operating system. 
 During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
 
 1. Log in as or elevate your shell to the root user.
 
-    `sudo su`
+    ```sh
+    sudo su
+    ```
 
 2. Run the following to invoke the install script: 
 
-    `bash <(curl -s https://raw.githubusercontent.com/thedatasnok/idata2304-iot-project/main/tools/install-sensor.sh)`
+    ```sh
+    bash <(curl -s https://raw.githubusercontent.com/thedatasnok/idata2304-iot-project/main/tools/install-sensor.sh)
+    ```
 
 3. Fill out details about the MQTT connection
 
-    **Note:** the client needs to be unique per client
-  
-### 3.1.2 Installing the ingest/visualization node
+    **Note:** the client ID needs to be unique per client
+
+
+#### 4.3.2 Installing the ingest/visualization node
 This step can be run on any computer compatible with Java 17, installing Java is a prerequisite. 
 For instance, on a debian based system, it can be installed running: `apt install openjdk-17-jre-headless`
 
@@ -104,16 +171,60 @@ For instance, on a debian based system, it can be installed running: `apt instal
     
     `MQTT_CLIENT_ID` the unique client id for this application
     
+    
+    Optionally set the following to be notified in a Discord channel when a measurement exceeds the threshold:
+
+    `NOTIFIER_ENABLED` set to `true` to enable the notifier
+
+    `NOTIFIER_DISCORD_WEBHOOK_URL` the Discord webhook URL to use for sending messages
+
+    `NOTIFIER_CPU_TEMPERATURE_THRESHOLD` the threshold for the CPU temperature in degrees celsius
+
+    
 
 3. Run the application `java -jar ingest-1.0.0.jar`
 
 
-### 3.2 Usage
-
-Once the ingest/visualization node is set up as described in [3.1.2](#312-installing-the-ingestvisualization-node), you can open up the user interface by visiting: http://localhost:8080/ in your browser.
+#### 4.3.3 Usage
+Once the ingest/visualization node is set up as described in [4.3.2](#312-installing-the-ingestvisualization-node), you can open up the user interface by visiting: http://localhost:8080/ in your browser.
 
 
 The sensor node is meant to run in the background unattended, but in case of errors you can control the service using `systemctl`. 
+
+
+<a href="#introduction">
+  <p align="right">
+  To top
+  </p>
+</a>
+
+
+## 5 Discussion
+
+
+<a href="#introduction">
+  <p align="right">
+  To top
+  </p>
+</a>
+
+
+## Conclusion and future work
+As part of the Autumn 2022 IDATA2304 Computer Networks project, our group developed a prototype of Antiboom - a Raspberry Pi health monitor. It should act as proof of concept for what could ensure longevity of appliances used to run applications under challenging environmental circumstances. In its current state, it is an application consisting of four components in control, namely sensor nodes, an ingestion service, an SQL database and a visualization service. A range of technologies and protocols was used to develop the project, with MQTT and HTTP being the two main building blocks. The development process consisted of 1 week long sprints, starting each tuesday by documenting the previous sprint and planning the next one. Antiboom sensor nodes can currently be installed on ARM64-based computers, and the visualization service - a Web interface - on any computer running Java 17.
+
+Even though the current version of Antiboom fulfills the minimum requirements of the project, it is still a prototype. Some of the ideas initially written down in our [brainstorm document](docs/brainstorm.md), and some we thought of during development, did not make it in due to various reasons; time constraint being the main one. The following is a list of potential future work and possibilities for expansion:
+
+- The application currently utilizes a public MQTT broker. Though the amount of damage to be done through an attack on it during development is arguably low, utilizing a self-hosted broker would be a necessity in a real scenario.
+
+- One of the initial ideas for the Web interface was to display the minimum, average and maximum temperatures over a set period of time. This could be implemented through SQL queries and some statistics work.
+
+- A customizable maximum temperature threshold instead of a fixed one at 85° C.
+
+- More channels for notifications to make the application more universal. Currently implemented through Discord, though ideally to be expanded to E-mail and/or SMS.
+
+- Offline buffering and detection
+
+- ...
 
 
 <br />
@@ -124,13 +235,20 @@ The sensor node is meant to run in the background unattended, but in case of err
   </p>
 </a>
 
-## 4 Methodology
-Antiboom has been developed in 1 week long sprints, with each of the sprints documented [here](docs/sprints/index.md). This was done both to fullfill one of the project requirements (use of agile work methodology), but also because we have had positive former experiences with this type of workflow and believed it would work just as well for this assignment.
 
-Starting the week the assignment was handed out, our group used every tuesday to finalize a sprint and start a new one. This included discussing and writing a short report about the sprint, as well as planning, defining and assigning tasks as issues on our [GitHub issue board](https://github.com/users/thedatasnok/projects/2/). This usually went by smoothly as we had no problems distributing the issues according to our interests while keeping the workload mostly fair.
+## References
+- Wikipedia. *MQTT*. 24th of November 2022. [link][wikipedia-mqtt]
+- Mozilla MDN. *HTTP*. 24th of November 2022. [link][mdn-http]
+- Wikipedia. *Query string*. 24th of November 2022. [link][wikipedia-query-strings]
+- Mozilla MDN. *POST - HTTP*. 24th of November 2022. [link][mdn-http-post]
+- Mozilla MDN. *JavaScript*. 24th of November 2022. [link][mdn-javascript]
 
-Each thursday, we used the available classroom hours to meet in person and work on the project together. We did this to clear up any potential confusion about the assigned work, as well as help each other with mostly, but not only, programming-specific things.
-
+[wikipedia-mqtt]: https://en.wikipedia.org/wiki/MQTT
+[mdn-http]: https://developer.mozilla.org/en-US/docs/Web/HTTP
+[wikipedia-query-strings]: https://en.wikipedia.org/wiki/Query_string
+[mdn-http-post]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+[mdn-javascript]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[wikipedia-sql]: https://en.wikipedia.org/wiki/SQL
 
 TODO: add links to technologies
 

@@ -211,25 +211,14 @@ In the project, we decided to integrate to a Discord channel for notifications. 
 
 In the projects duration, we experienced few deviations from what initially had planned. There were a few times where we were not able to finish all activities planned in a sprint, however most of the sprints were completed as planned. Sometimes we even found time to slot in extra work, outside the initial plan of a sprint. 
 
+The system has been tested using a ready to use public MQTT broker distributed by the teachers of this project. While this is handy solution for the scope of this project, it still opens up for some security issues. Malicious attacks can target our application by sending messages to the MQTT broker with the same topic structure, this would lead the ingestion service of the system picking up unwanted messages and creating spam. This is not a major issue, since the application can be configured to use an MQTT broker of choice using the environment variables as specified in [4.3.2](#432-installing-the-ingestvisualization-node). While it currently does not support using username and password for authentication, it is a feature that can be added in the future. 
 
-+security considerations
+The lack of protection on the used MQTT broker may open up for some Denial of Service attacks. The speed of which the ingestion service is able to process requests is reliant on the speed of the database, which is controlled by the I/O capabilities of the host system. In addition to DoS types of attacks, there is also the possibility that a malicious actor could send meaningless data to the same topics as other sensors, which may cause the integrity of the data to be compromised.
+
+The data transmitted with the public MQTT broker and the sensor nodes is open and not encrypted. A possible solution would be to connect to an MQTT broker using encrypted protocols, but the message payload is still in clear format at the broker side. This can be mitigated through encrypting the payload using symmetric key encryption or equivalent solutions, allowing the sensor application to encrypt while the ingestion service needs to decrypt it. While encrypting the data with said methods would be possible, we have deemed it to be not too important in the current state of the project as the only information being encoded in the message payload is temperature measurements. If further development of the sensors results in more sensitive data being transmitted, it would be a good idea to implement some level of encryption. 
 
 
 <a href="#abstract">
-  <p align="right">
-  To top
-  </p>
-</a>
-
-## 6 Security
-
-Antiboom have been developed around using a ready to use public MQTT broker distributed by the teachers of this project, while this is handy solution for the scope of this project, it still opens up for some security issues. Malicious attacks can target our application by sending messages to the open MQTT broker with the same topic structure, this would lead the ingestion service of the application picking up unwanted messages and creating spam.
-
-There is also the potential of a public MQTT broker being more open to the public, and therfore more open to a dos/ddos attack.
-
-Regarding security when transmitting data with the public MQTT broker and the client. The data transmitted with the public MQTT broker and the sensor nodes is open and not encrypted. While encrypting the data with a shared secret key would be possible, the sensitivity of the data sent from the sensor nodes and the scope of this project makes this a feature not deemed necessary.
-
-<a href="#introduction">
   <p align="right">
   To top
   </p>
@@ -240,7 +229,7 @@ As part of the Autumn 2022 IDATA2304 Computer Networks project, our group develo
 
 Even though the current version of Antiboom fulfills the minimum requirements of the project, it is still a prototype. Some of the ideas initially written down in our [brainstorm document](docs/brainstorm.md), and some we thought of during development, did not make it in due to various reasons; time constraint being the main one. The following is a list of potential future work and possibilities for expansion:
 
-- The application currently utilizes a public MQTT broker. Though the amount of damage to be done through an attack on it during development is arguably low, utilizing a self-hosted broker would be a necessity in a real scenario.
+- Our instances of the application currently utilizes a public MQTT broker. Though the amount of damage to be done through an attack on it during development is arguably low, utilizing a self-hosted broker would be a necessity in a real scenario.
 
 - One of the initial ideas for the Web interface was to display the minimum, average and maximum temperatures over a set period of time. This could be implemented through SQL queries and some statistics work.
 

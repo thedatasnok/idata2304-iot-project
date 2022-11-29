@@ -39,6 +39,8 @@
 ### What extra has been done this sprint?
 Implemented a simple notifier for sending Discord messages to a channel when a sensor measures a temperature that exceeds a certain threshold.
 
+Updated to Spring Boot 3 and made it possible to bundle the ingest application as a native image.
+
 ## Sprint retrospective
 
 ### What would we do differently?

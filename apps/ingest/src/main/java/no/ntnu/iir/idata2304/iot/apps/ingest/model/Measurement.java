@@ -28,7 +28,7 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @NoArgsConstructor
-public class Measurement {
+public abstract class Measurement {
 
   public static final String PRIMARY_KEY = "measurement_id";
 

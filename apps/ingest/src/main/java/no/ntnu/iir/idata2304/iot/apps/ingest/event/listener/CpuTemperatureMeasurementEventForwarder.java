@@ -35,7 +35,8 @@ public class CpuTemperatureMeasurementEventForwarder {
         emitter.send(createdMeasurement.getMeasurement());
       }
     } catch (Exception e) {
-      log.error("Failed to forward CPU temperature measurement creation to socket", e);
+      log.error("Failed to forward CPU temperature measurement creation to socket: {}", e.getMessage());
+      log.debug("Error forwarding measurement: ", e);
     }
   }
 
@@ -46,18 +47,18 @@ public class CpuTemperatureMeasurementEventForwarder {
    */
   public void addEmitter(SseEmitter emitter) {
     emitter.onError(err -> {
-      log.error("Something went wrong with SSE emitter, removing emitter from forward list!", err);
+      log.error("Removing errored emitter from forwarded emitters, because: {}", err.getMessage());
+      log.debug("Forwarded emitter error: ", err);
       this.emitters.remove(emitter);
     });
 
     emitter.onTimeout(() -> {
-      log.warn("SSE emitter timed out, removing emitters from forward list!");
+      log.debug("Removing timed out emitter from forwarded emitters");
       this.emitters.remove(emitter);
     });
 
     emitter.onCompletion(() -> {
       log.debug("Removing completed emitter from forwarded emitters");
-      log.debug("{}", emitter);
       this.emitters.remove(emitter);
     });
 

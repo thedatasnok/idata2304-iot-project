@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import SensorCard from './components/card/SensorCard';
 import Card from './components/container/Card';
-import SensorStatusIndicatorHints from './components/indicator/SensorStatusIndicatorHints';
+import SensorStatusIndicatorHints, { convertTemperatureToColor } from './components/indicator/SensorStatusIndicatorHints';
 import dayjs from 'dayjs';
 import {
   CpuTemperatureMeasurementProjection,
@@ -68,7 +68,7 @@ const App = () => {
         };
 
         // set the domain min to the oldest measurement
-        // in the current view. since the latest updated measurement is the 
+        // in the current view. since the latest updated measurement is the
         // latest source of truth - we can use it to determine where the domain starts
         setDomainMin(newMeasurements[key][0].measuredAt);
 
@@ -170,6 +170,11 @@ const App = () => {
               <Card
                 key={`${sensor.place}-${sensor.room}-${sensor.id}`}
                 className='p-2 hover:bg-zinc-700 border-l-4 transition-all border-green-500 cursor-pointer'
+                style={{
+                  borderColor: convertTemperatureToColor(
+                    sensor.lastMeasuredTemperature
+                  ),
+                }}
               >
                 <SensorCard {...sensor} />
               </Card>

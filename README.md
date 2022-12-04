@@ -193,6 +193,13 @@ Once the ingest/visualization node is set up as described in [4.3.2](#312-instal
 
 The sensor node is meant to run in the background unattended, but in case of errors you can control the service using `systemctl`. 
 
+### 4.4 User interface
+
+The main focus in the user interface of the system was to keep it simple. The user interface is built using React and TypeScript and is bundled into the ingestion service which can be installed as described in [4.3.2](#432-installing-the-ingestvisualization-node). The figure below shows the user interface of the application, with the graph visualization on the right and sensor details on the left. The graph and sensor details is updated as new measurements are stored in the database, as described in [4.1](#41-architecture).
+
+<div align="center">
+  <img src="docs/assets/user-interface.png" />
+</div>
 
 <a href="#abstract">
   <p align="right">

@@ -96,7 +96,7 @@ The sensor nodes are programmed to send measurements to a configured MQTT broker
 
 Once a measurement is received at the MQTT broker, the MQTT broker forwards the message to any clients listening to topics matching this pattern. In this case, to support multiple sensors, a pattern matcher is used to listen to all topics that match the pattern `g9hood/+/+/cpu/group09/+`. The ingestion service subscribes to the broker using this pattern, and receives all messages sent to the broker using that pattern as their topic. 
 
-As messages are received at in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both these objects are then saved to a database. The Spring Boot JPA integration used to communicate with the database, which is H2 in this case. The usage of H2 results in a less complex setup, and is stored directly to a file on the system. 
+As messages are received in the ingestion service, they are processed before being persisted. The message topic is destructured into a set of sensor metadata, and the message payload is parsed into a measurement object. Both objects are then saved to a database. The Spring Boot JPA integration is used to communicate with the database, which is H2 in this case. The usage of H2 results in a less complex setup, and is stored directly to a file on the system. 
 
 <br />
 
@@ -106,36 +106,36 @@ As messages are received at in the ingestion service, they are processed before 
 
 <br />
 
-As the ingestion service saves measurements to the database, it reads out the inserted row from the database including generated fields such as the primary key and creation date. It uses the read information to produce an event internally in the application allowing further notifying any recipients of the event. This is accomplished using Springs event system. 
+As the ingestion service saves measurements to the database, it reads out the inserted row from the database including generated fields, such as the primary key and creation date. It uses the read information to produce an event internally in the application, allowing to further notify any recipients of the event. This is accomplished using Spring's event system. 
 
-There are two event listeners in the ingestion service that listen to this event. One of them is an event forwarder, it forwards any of the stored measurements to clients using the visualization service through Server-sent events. Any of the visualization clients that are listening to the events using an EventSource, will receive the newly processed measurement and can add it to the visualization. 
+There are two event listeners in the ingestion service that listen to this event. One of them is an event forwarder, which forwards any of the stored measurements to clients using the visualization service through Server-sent events. Any of the visualization clients that are listening to the events using an EventSource, will receive the newly processed measurement and can add it to the visualization. 
 
-In addition to forwarding the events, there is another listener that represents a notifier. The notifier is optionally configured by the administrator of the service, and can send messages to a configured Discord channel. The notifier determines whether the saved measurement exceeds a configured threshold. If it exceeds, it sends a POST request to the configured webhook using Springs RestTemplate functionality, which results in a message being sent in the channel.
+In addition to forwarding the events, there is another listener that represents a notifier. The notifier is optionally configured by the administrator of the service, and can send messages to a configured Discord channel. The notifier determines whether the saved measurement exceeds a configured threshold. If it exceeds, a POST request is sent to the configured webhook using Spring's RestTemplate functionality, which results in a message being sent in the channel.
 
-The visualization service is not only capable of receiving new updates, it also reads recent historical measurements from the ingestion service. The visualization uses the web browser Fetch API to send HTTP requests to the ingestion service. The ingestion service employs the Spring Boot Web integration to implement HTTP endpoints that reads from the database and encodes objects as JSON before responding to the clients request. This mechanism is used to fetch initial data for the graph and metadata for sensors. The measurement data fetched is narrowed using a query parameter, which defines the time of when measurements should be measured after. The narrowing prevents the graph from extending too far into the past, and only shows the most recent measurements. 
+The visualization service is not only capable of receiving new updates, it also reads recent historical measurements from the ingestion service. The visualization uses the web browser Fetch API to send HTTP requests to the ingestion service. The ingestion service employs the Spring Boot Web integration to implement HTTP endpoints that read from the database and encode objects as JSON before responding to the client's request. This mechanism is used to fetch initial data for the graph and metadata for sensors. The measurement data fetched is narrowed using a query parameter, which defines the time after which the measurements should be queried. The narrowing prevents the graph from extending too far into the past, and only shows the most recent measurements. 
 
 In order to update the graph and sensor details displayed on the web page, the state functionality in React is used. As the visualization service receives or reads measurements and sensor metadata, it updates the state of the application. The change of state causes React to re-render the page, resulting in the graph and sensor details updating. 
 
 
 ### 4.2 Bundling
 
-Both the ingestion and sensor applications are capable of being bundled using GraalVM. Which means they can be run as native binaries, without the need for a JVM. This has reduced the amount of resources required to run the applications, as well as reducing the startup time. It also simplifies the installation of the application, as there is no prerequisite for a compatible JVM. As long as the sensor node is a debian based system on a arm64 architecture, the application can be installed using the provided installation script. As for the ingestion service, we still only provide a JAR file that can be used by a compatible JVM, but it is possible to bundle it as a native binary. 
+Both the ingest and sensor applications are capable of being bundled using GraalVM. This means that they can be run as native binaries, without the need for a JVM. This has reduced the amount of resources required to run the applications, as well as reducing the startup time. It also simplifies the installation of the application, as there is no prerequisite for a compatible JVM. As long as the sensor node is a Debian based system on an ARM64 architecture, the application can be installed using the provided installation script. As for the ingestion service, we still only provide a JAR file that can be used by a compatible JVM, but it is possible to bundle it as a native binary. 
 
 The visualization service is also included in the native binaries of the ingestion service. The React application built with TypeScript is bundled using Vite. The bundle is then copied inside the ingestion service and served by it. This means that the visualization service is not a separate deployment, but rather a part of the ingestion service. This simplifies the installation, as there is no need to install and run two separate applications. 
 
-Released versions of the system is available on GitHub. In order to release a new version, the process as described [here](docs/releasing.md) can be followed. The release process is built using GitHub Actions, that will bundle the two applications as JAR for the ingest application and native binary for the sensor application. The release process creates a new release on GitHub, and uploads the bundled applications as artifacts. 
+Released versions of the system are available on GitHub. In order to release a new version, the process as described [here](docs/releasing.md) can be followed. The release process is built using GitHub Actions, that will bundle the two applications as JAR for the ingest application and native binary for the sensor application. The release process creates a new release on GitHub, and uploads the bundled applications as artifacts. 
 
 
 ### 4.3 Installation & Usage
 In order to set up or install the software you will need the following: 
-- An ARM64 sensor node running a debian based operating system
+- An ARM64 sensor node running a Debian based operating system
 - A computer with Java 17 (LTS) installed
 
 Both devices will need an internet connection.
 
 
 #### 4.3.1 Installing sensor nodes
-This step requires you to have an ARM64 based computer with running a Debian based operating system. 
+This step requires you to have an ARM64 based computer running a Debian based operating system. 
 During our testing, we have run the 64-bit version of Raspberry Pi OS Lite.
 
 1. Log in as or elevate your shell to the root user.
@@ -195,7 +195,7 @@ The sensor node is meant to run in the background unattended, but in case of err
 
 ### 4.4 User interface
 
-The main focus in the user interface of the system was to keep it simple. The user interface is built using React and TypeScript and is bundled into the ingestion service which can be installed as described in [4.3.2](#432-installing-the-ingestvisualization-node). The figure below shows the user interface of the application, with the graph visualization on the right and sensor details on the left. The graph and sensor details is updated as new measurements are stored in the database, as described in [4.1](#41-architecture).
+The main focus of the user interface was to keep it simple. It is built using React and TypeScript and is bundled into the ingestion service which can be installed as described in [4.3.2](#432-installing-the-ingestvisualization-node). The figure below shows the user interface of the application, with the graph visualization on the right and sensor details on the left. The graph and sensor details are updated as new measurements are stored in the database, as described in [4.1](#41-architecture).
 
 <div align="center">
   <img src="docs/assets/user-interface.png" />
@@ -210,19 +210,19 @@ The main focus in the user interface of the system was to keep it simple. The us
 
 ## 5 Discussion
 
-The choice of technologies slots in nicely with a combination of prior experience and possibilities to learn new concepts and technologies. The pairing of SQL for a persistent store of measurement data and Spring Boot lead to a relatively quick development of both the ingestion service and the sensor application. The main portion of the system is built using Java, a language in which most of the team members have experience. 
+The choice of technologies slots in nicely with a combination of prior experience and possibilities to learn new concepts and technologies. The pairing of SQL for persistent storage of measurement data and Spring Boot, lead to a relatively quick development of both the ingestion service and the sensor application. The main portion of the system is built using Java, a language in which all of the team members have experience. 
 
-In addition to Spring Boot, we used a combination of React and TypeScript for the visualization service. Most of the team members are new to these technologies, but the projects slim scope resulted in it being a decent fit to be introduced to them. 
+In addition to Spring Boot, we used a combination of React and TypeScript for the visualization service. Most of the team members are new to these technologies, but the project's slim scope resulted in it being a decent fit to be introduced to them. 
 
-In the project, we decided to integrate to a Discord channel for notifications. Discord may not have a strong level of cohesion with the problem domain, but serves as a good example because the knowledge required to integrate with it is minimal. This choice was mainly made to emphasize the possibilities for analyzing the stored measurements, and providing notifications based on a condition that is met. 
+In the project, we decided to integrate to a Discord channel for notifications. Discord may not have a strong level of cohesion with the problem domain, but serves as a good example, because the knowledge required to integrate with it is minimal. This choice was mainly made to emphasize the possibilities for analyzing the stored measurements, and providing notifications based on a condition that is met. 
 
-In the projects duration, we experienced few deviations from what initially had planned. There were a few times where we were not able to finish all activities planned in a sprint, however most of the sprints were completed as planned. Sometimes we even found time to slot in extra work, outside the initial plan of a sprint. 
+During the project, we experienced few deviations from what initially had been planned. There were a few times where we were not able to finish all activities planned in sprints, however most of them were completed as planned. Sometimes we even found time to slot in extra work, outside the initial plan of a sprint. 
 
 The system has been tested using a ready to use public MQTT broker distributed by the teachers of this project. While this is handy solution for the scope of this project, it still opens up for some security issues. Malicious attacks can target our application by sending messages to the MQTT broker with the same topic structure, this would lead the ingestion service of the system picking up unwanted messages and creating spam. This is not a major issue, since the application can be configured to use an MQTT broker of choice using the environment variables as specified in [4.3.2](#432-installing-the-ingestvisualization-node). While it currently does not support using username and password for authentication, it is a feature that can be added in the future. 
 
 The lack of protection on the used MQTT broker may open up for some Denial of Service attacks. The speed of which the ingestion service is able to process requests is reliant on the speed of the database, which is controlled by the I/O capabilities of the host system. In addition to DoS types of attacks, there is also the possibility that a malicious actor could send meaningless data to the same topics as other sensors, which may cause the integrity of the data to be compromised.
 
-The data transmitted with the public MQTT broker and the sensor nodes is open and not encrypted. A possible solution would be to connect to an MQTT broker using encrypted protocols, but the message payload is still in clear format at the broker side. This can be mitigated through encrypting the payload using symmetric key encryption or equivalent solutions, allowing the sensor application to encrypt while the ingestion service needs to decrypt it. While encrypting the data with said methods would be possible, we have deemed it to be not too important in the current state of the project as the only information being encoded in the message payload is temperature measurements. If further development of the sensors results in more sensitive data being transmitted, it would be a good idea to implement some level of encryption. 
+The data transmitted with the public MQTT broker and the sensor nodes is open and not encrypted. A possible solution would be to connect to an MQTT broker using encrypted protocols, but the message payload is still in clear format at the broker side. This can be mitigated through encrypting the payload using symmetric key encryption or equivalent solutions, allowing the sensor application to encrypt while the ingestion service needs to decrypt it. While encrypting the data with said methods would be possible, we have deemed it not too important in the current state of the project as the only information being encoded in the message payload is temperature measurements. If further development of the sensors results in more sensitive data being transmitted, it would be a good idea to implement some level of encryption. 
 
 
 <a href="#abstract">
@@ -248,7 +248,7 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 
 - Offline detection, can the sensor nodes measurements to detect if the node is offline?
 
-- Measuring multiple variables that may help describe the working conditions of a node better, perhaps expand to a dynamic way of configuring measurements
+- Measuring multiple variables that may help describe the working conditions of a node better, perhaps expand to a dynamic way of configuring measurements.
 
 
 <br />

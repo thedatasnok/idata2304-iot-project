@@ -20,8 +20,13 @@ There is a growth of technological applications being connected to the internet.
 
 Antiboom is our solution to the Autumn 2022 IDATA2304 Computer Networks project which involves building a prototype of a meaningful IoT application. The application is a Raspberry Pi health monitor which periodically logs processor temperature(s) and displays them in a user-friendly fashion on a web interface. The main idea stems from the potential problem that arises when IoT devices are placed in hot environments, such as inside fuel price signs at gas stations, where the temperatures may exceed what is considered safe for the device. The goal of the application is to prevent any potential device damage by providing a real-time graph of temperatures within a set time period, which in turn helps discover any flaws with the device, such as broken fans or heat sinks.
 
-## 2 Technologies
+## 2 Theory and Technologies
 
+### 2.1 Background
+The number of technological applications being connected to the Internet is growing. Statista forecasts a growth of approximately 2 billion devices per year, which would result in about 29 billion devices by 2030 ([Statista 2022][statista-iot-device-growth]). The cause of malfunction of such systems may be the result of a rise in operating temperature ([IEEE 2021][ieee-automatic-overheat-detection]). One factor that may contribute to this is limited cooling, high ambient temperature, or a combination of these. Limited cooling may consist of a broken fan, broken heat sinks, lack of airflow or dust buildup. In the case of a information screen, the controller devices may be placed in a cabinet, inside the roof, or other locations that impact the cooling capabilities of the system. 
+
+
+### 2.2 Technologies
 A range of protocols are applied in this project, with the two main building blocks being MQTT and HTTP.
 
 MQTT is a lightweight publish-subscribe messaging protocol for Internet of Things applications ([Wikipedia 2022][wikipedia-mqtt]). MQTT is an abbreviation for the previously called Message Queuing Telemetry Transport. Being one of the project's required protocols, it is responsible for publishing the temperature data of a sensor node to a defined topic on a broker, as well as subscribing to said topic in order to enable data reception. MQTT is an application layer protocol that utilizes a TCP connection to a broker, to send or receive messages.
@@ -266,6 +271,9 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 - Wikipedia. *Query string*. Accessed 24th of November 2022. [link][wikipedia-query-strings]
 - Mozilla MDN. *POST - HTTP*. Accessed 24th of November 2022. [link][mdn-http-post]
 - Mozilla MDN. *JavaScript*. Accessed 24th of November 2022. [link][mdn-javascript]
+- Statista. *Number of Internet of Things (IoT) connected devices worldwide from 2019 to 2021, with forecasts from 2022 to 2030*. Accessed 6th of December 2022. [link][statista-iot-device-growth]
+- M. F. S. D. Shah, A. S. Ahmad, K. H. Yusof and M. S. S. M. Basir. *Automatic Overheat Early Detection System*, published by IEEE. Accessed 6th of December 2022. [link][ieee-automatic-overheat-detection]
+
 
 [wikipedia-mqtt]: https://en.wikipedia.org/wiki/MQTT
 [mdn-http]: https://developer.mozilla.org/en-US/docs/Web/HTTP
@@ -273,24 +281,7 @@ Even though the current version of Antiboom fulfills the minimum requirements of
 [mdn-http-post]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 [mdn-javascript]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
 [wikipedia-sql]: https://en.wikipedia.org/wiki/SQL
-
-TODO: add links to technologies
-
-[mqtt]: https://
-[tcp]: https://
-[http]: https://
-[json]: https://
-
-[gradle]: https://
-[java-17]: https://
-[spring-boot]: https://
-[h2-sql]: https://
-[liquibase]: https://
-[pnpm]: https://
-[typescript]: https://
-[react]: https://
-[vite]: https://
-[tailwind-css]: https://
-[recharts]: https://
+[statista-iot-device-growth]: https://www.statista.com/statistics/1183457/iot-connected-devices-worldwide/
+[ieee-automatic-overheat-detection]: https://ieeexplore.ieee.org/document/9689156/references#references
 
 [release-latest]: https://github.com/thedatasnok/idata2304-iot-project/releases/latest

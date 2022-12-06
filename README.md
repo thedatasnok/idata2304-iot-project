@@ -7,7 +7,7 @@
   <p>
     don't let it explode.
     <br />
-    <a href="#43-getting-started"><strong>Get started »</strong></a>
+    <a href="#43-installation--usage"><strong>Get started »</strong></a>
 </div>
 
 <p align="center">This is an educational project in the course IDATA2304 Computer Networks at NTNU.</p>
